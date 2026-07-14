@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoCode Academy - Main Offer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#c4e7ff",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-error-container": "#93000a",
+                      "outline": "#737686",
+                      "outline-variant": "#c3c5d7",
+                      "primary": "#003fb1",
+                      "primary-container": "#1a56db",
+                      "on-tertiary-container": "#d6dfe5",
+                      "on-tertiary-fixed-variant": "#3f484d",
+                      "surface-container-low": "#eff4ff",
+                      "tertiary": "#424b50",
+                      "on-background": "#0b1c30",
+                      "on-secondary-fixed": "#001e2c",
+                      "on-surface": "#0b1c30",
+                      "on-tertiary-fixed": "#141d21",
+                      "inverse-surface": "#213145",
+                      "surface-tint": "#1353d8",
+                      "inverse-primary": "#b5c4ff",
+                      "on-secondary-fixed-variant": "#004c69",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#004d6a",
+                      "secondary-container": "#40c2fd",
+                      "surface-container": "#e5eeff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#dce9ff",
+                      "tertiary-fixed": "#dbe4ea",
+                      "surface-variant": "#d3e4fe",
+                      "surface": "#f8f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "primary-fixed-dim": "#b5c4ff",
+                      "background": "#f8f9ff",
+                      "tertiary-fixed-dim": "#bfc8ce",
+                      "secondary": "#00668a",
+                      "on-surface-variant": "#434654",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-primary-container": "#d4dcff",
+                      "on-primary": "#ffffff",
+                      "surface-dim": "#cbdbf5",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#dbe1ff",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#5a6368",
+                      "on-primary-fixed": "#00174d",
+                      "secondary-fixed-dim": "#7bd0ff",
+                      "on-primary-fixed-variant": "#003dab"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-padding-desktop": "96px",
+                      "margin-mobile": "16px",
+                      "container-max": "1200px",
+                      "gutter": "24px",
+                      "section-padding-mobile": "48px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-bold": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-xl": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-bold": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glow-focus:focus-within {
+            box-shadow: 0 0 0 3px rgba(64, 194, 253, 0.5);
+        }
+        .soft-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-[#F0F9FF] text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- Top Navigation (Suppressed for transactional flow as per instructions, prioritizing Canvas) -->
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center py-section-padding-mobile md:py-section-padding-desktop px-gutter w-full">
+<div class="max-w-[700px] w-full mx-auto flex flex-col items-center">
+<!-- Video Placeholder -->
+<div class="w-full aspect-video rounded-xl bg-surface-variant flex items-center justify-center relative overflow-hidden soft-shadow mb-8 border border-outline-variant">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60" data-alt="A professional, well-lit video placeholder frame for an e-learning course. The image features a clean, modern desk setup with a sleek laptop, a notebook, and a steaming cup of coffee. The lighting is soft and natural, emphasizing a productive and focused learning environment. The color palette is predominantly light with crisp white surfaces, subtle blue accents matching the brand, and deep blacks for contrast. A subtle, high-end aesthetic is maintained throughout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd4cU50bqXujtjY-05SPQk3rJ8cxXXIAX8N4lVr0LdV0tiPGblFK7xv0ueqD-R62ULkPKTU7GYN_yEUllCNXL2_avZSo_ntvBG3kan0Kqkj7uMfHfHwc_KtNw9VkGZEe6Xe-s2i83tB1dYzNMydA4UNSGxukPpe2Ik2noZVgFypck_ZwqRjKp2wvf1p__vMYPPN_QXyxGCWA9WcD-kP8zEk4TP5HuqJC8a0pqUpqEXuHYDRdDsrvepTR073r78aSi0jpp8gELG0Aw"/>
+<div class="absolute inset-0 bg-primary/10"></div>
+<button class="relative z-10 w-20 h-20 bg-primary-container text-on-primary rounded-full flex items-center justify-center hover:bg-primary transition-colors soft-shadow group">
+<span class="material-symbols-outlined text-headline-xl group-hover:scale-110 transition-transform" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<!-- Content Area -->
+<div class="bg-surface rounded-[16px] border border-outline-variant p-8 md:p-12 w-full flex flex-col items-center text-center soft-shadow relative z-10">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">
+                    Get Full Recordings + The Ultimate Ebook
+                </h1>
+<div class="font-headline-xl text-headline-xl text-primary-container mb-8 font-extrabold tracking-tight">
+                    ₦3,500 <span class="font-headline-lg text-headline-lg text-on-surface-variant font-bold align-middle text-2xl">Only</span>
+</div>
+<div class="w-full max-w-md bg-surface-container-low rounded-lg p-6 mb-8 text-left border border-outline-variant soft-shadow">
+<ul class="space-y-4">
+<li class="flex items-start">
+<span class="material-symbols-outlined text-primary-container mr-3 mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">Lifetime Access to all video sessions</span>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-primary-container mr-3 mt-0.5" data-icon="menu_book" data-weight="fill" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">Comprehensive PDF Cheat-sheets</span>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-primary-container mr-3 mt-0.5" data-icon="offline_pin" data-weight="fill" style="font-variation-settings: 'FILL' 1;">offline_pin</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">Download and Learn Offline anytime</span>
+</li>
+</ul>
+</div>
+<!-- TODO(backend): wire this button to your payment gateway (Paystack/Flutterwave) checkout for the ₦3,500 tier -->
+<a class="w-full max-w-md bg-primary-container text-on-primary font-label-bold text-label-bold py-4 px-8 rounded-lg hover:bg-primary transition-colors soft-shadow text-[18px] mb-6 flex items-center justify-center" href="dashboard.html">
+                    Buy Recordings + Ebook for ₦3,500
+                    <span class="material-symbols-outlined ml-2" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="budget-offer.html">
+                    Prefer just the raw video files without the ebook? Click here for the ₦2,500 option.
+                </a>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest border-t border-outline-variant mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter py-section-padding-mobile md:py-12 w-full max-w-container-max mx-auto">
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface dark:text-on-surface-variant mb-6 md:mb-0">
+                NoCode Academy
+            </div>
+<nav class="flex flex-wrap justify-center gap-6 mb-6 md:mb-0">
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Support</a>
+</nav>
+<div class="font-body-sm text-body-sm text-primary dark:text-primary-fixed-dim text-center md:text-right">
+                © 2024 NoCode Academy. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

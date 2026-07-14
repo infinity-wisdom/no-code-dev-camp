@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoCode Academy - 7-Day Bootcamp Squeeze Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#c4e7ff",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-error-container": "#93000a",
+                        "outline": "#737686",
+                        "outline-variant": "#c3c5d7",
+                        "primary": "#003fb1",
+                        "primary-container": "#1a56db",
+                        "on-tertiary-container": "#d6dfe5",
+                        "on-tertiary-fixed-variant": "#3f484d",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary": "#424b50",
+                        "on-background": "#0b1c30",
+                        "on-secondary-fixed": "#001e2c",
+                        "on-surface": "#0b1c30",
+                        "on-tertiary-fixed": "#141d21",
+                        "inverse-surface": "#213145",
+                        "surface-tint": "#1353d8",
+                        "inverse-primary": "#b5c4ff",
+                        "on-secondary-fixed-variant": "#004c69",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#004d6a",
+                        "secondary-container": "#40c2fd",
+                        "surface-container": "#e5eeff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#dce9ff",
+                        "tertiary-fixed": "#dbe4ea",
+                        "surface-variant": "#d3e4fe",
+                        "surface": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#bfc8ce",
+                        "secondary": "#00668a",
+                        "on-surface-variant": "#434654",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-container": "#d4dcff",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#5a6368",
+                        "on-primary-fixed": "#00174d",
+                        "secondary-fixed-dim": "#7bd0ff",
+                        "on-primary-fixed-variant": "#003dab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-padding-desktop": "96px",
+                        "margin-mobile": "16px",
+                        "container-max": "1200px",
+                        "gutter": "24px",
+                        "section-padding-mobile": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-bold": ["14px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+        .focus-glow:focus-within {
+            box-shadow: 0 0 0 1px #1A56DB;
+            border-color: #1A56DB;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- Ambient Depth Background -->
+<div class="absolute inset-0 z-0 pointer-events-none" style="background: radial-gradient(circle at top right, #F0F9FF 0%, transparent 60%); opacity: 0.7;"></div>
+<!-- Header (Logo Only for Squeeze Page) -->
+<header class="w-full max-w-container-max mx-auto px-gutter py-6 relative z-10 flex items-center justify-between">
+<a aria-label="NoCode Academy Home" class="font-headline-lg text-headline-lg font-extrabold text-primary" href="#">
+            NoCode Academy
+        </a>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24">
+<!-- Left Side: Value Proposition (60%) -->
+<section class="w-full md:w-3/5 space-y-8">
+<div class="space-y-4">
+<span class="inline-block bg-[#F0F9FF] text-[#38BDF8] px-3 py-1 rounded-full font-label-bold text-label-bold uppercase tracking-wider">
+                    Exclusive 7-Day Bootcamp
+                </span>
+<h1 class="font-headline-xl text-headline-xl font-extrabold text-on-surface leading-tight">
+<span class="text-primary-container">Build Your Profitable E-Commerce Store</span> in 7 Days – Zero Coding!
+                </h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-lg md:text-xl max-w-2xl">
+                    Stop procrastinating and start selling. Join thousands of successful entrepreneurs who launched their businesses using our step-by-step, no-code framework.
+                </p>
+</div>
+<div class="bg-surface rounded-2xl p-6 md:p-8 border border-[#E2E8F0] card-shadow">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6">Your 7-Day Roadmap to Launch:</h2>
+<ul class="space-y-4">
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 1: Idea Validation &amp; Product Sourcing</strong>
+<span class="text-on-surface-variant text-sm">Find winning products with high margins and validated demand.</span>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 2: Brand Identity &amp; Domain Setup</strong>
+<span class="text-on-surface-variant text-sm">Create a professional logo, brand colors, and secure your domain instantly.</span>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 3: Storefront Construction (No Code)</strong>
+<span class="text-on-surface-variant text-sm">Build a high-converting storefront using drag-and-drop templates.</span>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 4: Product Pages &amp; Copywriting</strong>
+<span class="text-on-surface-variant text-sm">Write compelling product descriptions that drive immediate sales.</span>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 5: Payment Gateways &amp; Logistics</strong>
+<span class="text-on-surface-variant text-sm">Set up secure payments, shipping rules, and automated fulfillment.</span>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 6: Essential Apps &amp; Optimization</strong>
+<span class="text-on-surface-variant text-sm">Install crucial apps for abandoned carts, reviews, and upselling.</span>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
+<div>
+<strong class="text-on-surface block mb-1">Day 7: Launch &amp; Initial Traffic Strategy</strong>
+<span class="text-on-surface-variant text-sm">Open your store to the world and run your first low-cost ad campaign.</span>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<!-- Right Side: Opt-in Form (40%) -->
+<section class="w-full md:w-2/5">
+<div class="bg-surface-container-lowest rounded-[16px] p-8 md:p-10 border border-[#38BDF8] card-shadow relative overflow-hidden">
+<!-- Decorative top bar -->
+<div class="absolute top-0 left-0 w-full h-1 bg-[#38BDF8]"></div>
+<div class="text-center mb-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Secure Your Spot Now</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                        Enter your details below to claim your complete training package and daily templates.
+                    </p>
+</div>
+<form class="space-y-5" id="lead-form">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+<div class="space-y-2">
+<label class="block font-label-bold text-label-bold text-on-surface" for="firstName">First Name</label>
+<div class="relative focus-glow rounded-lg transition-colors duration-200">
+<input class="w-full bg-[#F8FAFC] border-[#E2E8F0] rounded-lg px-4 py-3 text-[16px] text-on-surface placeholder:text-outline-variant focus:ring-0 focus:outline-none transition-colors duration-200 border" id="firstName" name="firstName" placeholder="Jane" required="" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block font-label-bold text-label-bold text-on-surface" for="lastName">Last Name</label>
+<div class="relative focus-glow rounded-lg transition-colors duration-200">
+<input class="w-full bg-[#F8FAFC] border-[#E2E8F0] rounded-lg px-4 py-3 text-[16px] text-on-surface placeholder:text-outline-variant focus:ring-0 focus:outline-none transition-colors duration-200 border" id="lastName" name="lastName" placeholder="Doe" required="" type="text"/>
+</div>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block font-label-bold text-label-bold text-on-surface" for="email">Email Address</label>
+<div class="relative focus-glow rounded-lg transition-colors duration-200">
+<span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-outline-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+</span>
+<input class="w-full bg-[#F8FAFC] border-[#E2E8F0] rounded-lg pl-11 pr-4 py-3 text-[16px] text-on-surface placeholder:text-outline-variant focus:ring-0 focus:outline-none transition-colors duration-200 border" id="email" name="email" placeholder="jane.doe@example.com" required="" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block font-label-bold text-label-bold text-on-surface" for="phone">Phone Number (Optional)</label>
+<div class="relative focus-glow rounded-lg transition-colors duration-200">
+<span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-outline-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]" data-icon="phone_iphone">phone_iphone</span>
+</span>
+<input class="w-full bg-[#F8FAFC] border-[#E2E8F0] rounded-lg pl-11 pr-4 py-3 text-[16px] text-on-surface placeholder:text-outline-variant focus:ring-0 focus:outline-none transition-colors duration-200 border" id="phone" name="phone" placeholder="(555) 123-4567" type="tel"/>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary rounded-lg py-4 px-6 text-[18px] font-bold tracking-wide hover:bg-surface-tint transition-all duration-200 shadow-[0_4px_14px_0_rgba(26,86,219,0.39)] hover:shadow-[0_6px_20px_rgba(26,86,219,0.23)] hover:-translate-y-[1px] flex items-center justify-center gap-2 group mt-6" type="submit">
+                        Claim My Training Package
+                        <span aria-hidden="true" class="material-symbols-outlined transition-transform duration-200 group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<p class="text-center text-xs text-outline mt-4">
+                        By submitting this form, you agree to our <a class="underline hover:text-primary transition-colors" href="#">Privacy Policy</a>. We hate spam and promise to keep your email safe.
+                    </p>
+</form>
+</div>
+<!-- Trust Indicators -->
+<div class="mt-8 flex items-center justify-center gap-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+<!-- Placeholders for Trust Logos if needed, keeping minimal per instructions -->
+</div>
+</section>
+</main>
+<!-- Footer Component from JSON -->
+<footer class="bg-surface-container-low mt-auto border-t border-[#E2E8F0]">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter py-section-padding-mobile md:py-12 w-full max-w-container-max mx-auto">
+<div class="mb-6 md:mb-0 text-center md:text-left">
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface mb-2">NoCode Academy</div>
+<p class="font-body-sm text-body-sm text-outline">© 2024 NoCode Academy. All rights reserved.</p>
+</div>
+<nav>
+<ul class="flex flex-wrap justify-center md:justify-end gap-6">
+<li>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors underline opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+</li>
+<li>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors underline opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+</li>
+<li>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors underline opacity-80 hover:opacity-100" href="#">Contact Support</a>
+</li>
+</ul>
+</nav>
+</div>
+</footer>
+<script>
+    // TODO(backend): Replace this localStorage placeholder with a real POST to your
+    // email/CRM provider (e.g. Mailchimp, ConvertKit) or your own lead-capture API.
+    // The funnel currently stores the lead client-side only so the static pages
+    // can be demoed end-to-end on GitHub Pages before the backend is wired up.
+    document.getElementById('lead-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var lead = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            capturedAt: new Date().toISOString()
+        };
+        localStorage.setItem('nca_lead', JSON.stringify(lead));
+        window.location.href = 'main-offer.html';
+    });
+</script>
+</body></html>

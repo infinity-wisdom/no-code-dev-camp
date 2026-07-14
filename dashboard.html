@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Premium Dashboard - NoCode Academy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#c4e7ff",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-error-container": "#93000a",
+                      "outline": "#737686",
+                      "outline-variant": "#c3c5d7",
+                      "primary": "#003fb1",
+                      "primary-container": "#1a56db",
+                      "on-tertiary-container": "#d6dfe5",
+                      "on-tertiary-fixed-variant": "#3f484d",
+                      "surface-container-low": "#eff4ff",
+                      "tertiary": "#424b50",
+                      "on-background": "#0b1c30",
+                      "on-secondary-fixed": "#001e2c",
+                      "on-surface": "#0b1c30",
+                      "on-tertiary-fixed": "#141d21",
+                      "inverse-surface": "#213145",
+                      "surface-tint": "#1353d8",
+                      "inverse-primary": "#b5c4ff",
+                      "on-secondary-fixed-variant": "#004c69",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#004d6a",
+                      "secondary-container": "#40c2fd",
+                      "surface-container": "#e5eeff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#dce9ff",
+                      "tertiary-fixed": "#dbe4ea",
+                      "surface-variant": "#d3e4fe",
+                      "surface": "#f8f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "primary-fixed-dim": "#b5c4ff",
+                      "background": "#f8f9ff",
+                      "tertiary-fixed-dim": "#bfc8ce",
+                      "secondary": "#00668a",
+                      "on-surface-variant": "#434654",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-primary-container": "#d4dcff",
+                      "on-primary": "#ffffff",
+                      "surface-dim": "#cbdbf5",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#dbe1ff",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#5a6368",
+                      "on-primary-fixed": "#00174d",
+                      "secondary-fixed-dim": "#7bd0ff",
+                      "on-primary-fixed-variant": "#003dab"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-padding-desktop": "96px",
+                      "margin-mobile": "16px",
+                      "container-max": "1200px",
+                      "gutter": "24px",
+                      "section-padding-mobile": "48px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-bold": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-xl": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-bold": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .premium-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .countdown-number {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Ambient depth effects */
+        .ambient-depth-bg {
+            background-image: radial-gradient(circle at top right, #F0F9FF 0%, transparent 60%),
+                              radial-gradient(circle at bottom left, #F0F9FF 0%, transparent 60%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-white">
+<!-- Section 4.1: Hero Dashboard -->
+<section class="bg-[#1A56DB] relative overflow-hidden text-white pt-24 pb-32 px-gutter">
+<!-- Abstract geometric background overlay for premium feel -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0%, transparent 50%);"></div>
+<div class="max-w-container-max mx-auto relative z-10 text-center flex flex-col items-center">
+<h1 class="font-headline-xl text-headline-xl md:text-[64px] md:leading-[1.1] md:tracking-[-0.02em] font-extrabold mb-4 animate-fade-in-up">
+                Welcome back, Alex!
+            </h1>
+<p class="font-body-md text-body-md text-blue-100 mb-12 max-w-2xl opacity-90">
+                Your No-Code E-Commerce Bootcamp begins soon. Secure your spot to unlock full access to the live sessions and community channels.
+            </p>
+<!-- Massive Digital Countdown -->
+<div class="flex gap-4 md:gap-8 justify-center mb-12">
+<div class="flex flex-col items-center">
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-8 border border-white/20 min-w-[80px] md:min-w-[120px]">
+<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number" id="days">06</span>
+</div>
+<span class="font-label-bold text-label-bold mt-3 text-blue-200 uppercase tracking-widest">Days</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-8 border border-white/20 min-w-[80px] md:min-w-[120px]">
+<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number" id="hours">14</span>
+</div>
+<span class="font-label-bold text-label-bold mt-3 text-blue-200 uppercase tracking-widest">Hours</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-8 border border-white/20 min-w-[80px] md:min-w-[120px]">
+<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number" id="mins">42</span>
+</div>
+<span class="font-label-bold text-label-bold mt-3 text-blue-200 uppercase tracking-widest">Mins</span>
+</div>
+</div>
+<!-- Conditional Unlock Button -->
+<!-- TODO(backend): wire this to your payment gateway (Paystack/Flutterwave) for the ₦5,000 live-access upsell -->
+<button class="bg-white text-[#1A56DB] font-label-bold text-label-bold px-8 py-4 rounded-lg shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-2 group">
+<span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
+                Pay ₦5,000 to Unlock Live Access
+                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Section 4.2: Community Access -->
+<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter relative">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-12">
+<h2 class="font-headline-lg text-headline-lg md:font-headline-lg text-on-surface mb-4">Connect with the Community</h2>
+<p class="font-body-md text-body-md text-outline">Join the conversation and network with fellow bootcamp attendees.</p>
+</div>
+<div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+<!-- Left Card: WhatsApp -->
+<a class="bg-white border border-[#E2E8F0] rounded-[16px] p-8 premium-shadow hover:border-green-400 hover:shadow-md transition-all flex flex-col items-center justify-center text-center group cursor-pointer h-full min-h-[240px]" href="#">
+<div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-green-600 text-3xl" data-icon="chat">chat</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface text-lg mb-2">Join Info Channel</h3>
+<p class="font-body-sm text-body-sm text-outline">Get real-time updates and announcements via WhatsApp.</p>
+</a>
+<!-- Right Card: Telegram (Locked) -->
+<div class="bg-white border border-[#E2E8F0] rounded-[16px] p-8 premium-shadow relative flex flex-col items-center justify-center text-center overflow-hidden min-h-[240px]">
+<!-- Locked Overlay -->
+<div class="absolute inset-0 bg-[#CBD5E1]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+<div class="bg-white p-4 rounded-full shadow-sm mb-3">
+<span class="material-symbols-outlined text-outline" data-icon="lock">lock</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Unlock with Payment</span>
+</div>
+<!-- Content underneath -->
+<div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 opacity-40">
+<span class="material-symbols-outlined text-blue-500 text-3xl" data-icon="forum">forum</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface text-lg mb-2 opacity-40">Premium Discussion Group</h3>
+<p class="font-body-sm text-body-sm text-outline opacity-40">Exclusive networking and direct Q&amp;A via Telegram.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4.3: Social Follow -->
+<section class="bg-[#F0F9FF] py-16 px-gutter border-y border-[#E2E8F0]/50">
+<div class="max-w-container-max mx-auto text-center">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-[#1A56DB] mb-8">
+                Follow &amp; DM us 'READY' for a Bonus Cheat Sheet!
+            </h2>
+<div class="flex flex-wrap justify-center gap-4 md:gap-8">
+<!-- Generic Icons for Socials to adhere to Material Symbols requirement, usually custom SVG would be used for brand logos -->
+<a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
+<span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="photo_camera">photo_camera</span> <!-- IG Proxy -->
+</a>
+<a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
+<span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="play_circle">play_circle</span> <!-- YT Proxy -->
+</a>
+<a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
+<span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="music_note">music_note</span> <!-- TikTok Proxy -->
+</a>
+<a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
+<span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="chat_bubble">chat_bubble</span> <!-- WhatsApp Proxy -->
+</a>
+<a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
+<span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="close">close</span> <!-- X Proxy -->
+</a>
+<a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
+<span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="work">work</span> <!-- LinkedIn Proxy -->
+</a>
+</div>
+</div>
+</section>
+<!-- Section 4.4: Referral System -->
+<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter ambient-depth-bg">
+<div class="max-w-container-max mx-auto">
+<div class="grid lg:grid-cols-12 gap-12 items-start">
+<!-- Share Interface (Left Col) -->
+<div class="lg:col-span-7 space-y-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Invite Friends, Earn Rewards</h2>
+<p class="font-body-md text-body-md text-outline">Share your unique link. Unlock exclusive guides when your friends join the waitlist.</p>
+</div>
+<!-- Share Link Input -->
+<div class="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0] flex flex-col sm:flex-row gap-4 items-center">
+<input aria-label="Referral Link" class="w-full bg-transparent border-none font-body-md text-on-surface focus:ring-0 px-2" id="referral-link" readonly="" type="text" value="nocodeacademy.com/?ref=ALEX123"/>
+<button class="w-full sm:w-auto bg-[#1A56DB] text-white font-label-bold text-label-bold px-6 py-3 rounded-lg hover:bg-primary transition-colors flex-shrink-0 flex justify-center items-center gap-2" id="copy-referral-link">
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
+                            Copy Link
+                        </button>
+</div>
+<!-- Share Buttons Row -->
+<div class="flex flex-wrap gap-4">
+<button class="flex-1 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 font-label-bold text-label-bold px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+                            WhatsApp
+                        </button>
+<button class="flex-1 bg-sky-50 text-sky-600 border border-sky-200 hover:bg-sky-100 font-label-bold text-label-bold px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="share">share</span>
+                            Twitter
+                        </button>
+</div>
+<!-- Progress -->
+<div class="pt-4 border-t border-[#E2E8F0]">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-bold text-label-bold text-on-surface">Your Progress</span>
+<span class="font-body-sm text-body-sm text-primary-container font-semibold">Invited 4 of 10 friends</span>
+</div>
+<div class="w-full bg-[#E2E8F0] rounded-full h-2 mb-8">
+<div class="bg-[#1A56DB] h-2 rounded-full transition-all duration-1000" style="width: 40%"></div>
+</div>
+</div>
+<!-- Recent Referrals List -->
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface mb-4">Recent Referrals</h4>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg">
+<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-label-bold text-sm">S</div>
+<span class="font-body-md text-body-md flex-1">Sarah Jenkins</span>
+<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>
+</li>
+<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg">
+<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-label-bold text-sm">M</div>
+<span class="font-body-md text-body-md flex-1">Michael Chen</span>
+<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>
+</li>
+<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg">
+<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-label-bold text-sm">D</div>
+<span class="font-body-md text-body-md flex-1">David O.</span>
+<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>
+</li>
+<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg opacity-60">
+<div class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-label-bold text-sm">P</div>
+<span class="font-body-md text-body-md flex-1">Pending Invite</span>
+<span class="text-outline text-xs">Waiting...</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Reward Cards (Right Col) -->
+<div class="lg:col-span-5 bg-[#F8FAFC] p-6 md:p-8 rounded-[16px] border border-[#E2E8F0]">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-6">Unlockable Rewards</h3>
+<div class="space-y-4">
+<!-- Unlocked Reward (4/3 invites) -->
+<div class="bg-white p-5 rounded-xl border border-green-200 premium-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> Unlocked
+                            </div>
+<div class="flex gap-4 items-start pt-2">
+<div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-green-600" data-icon="design_services">design_services</span>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface mb-1">UI/UX Cheatsheet</h4>
+<p class="font-body-sm text-body-sm text-outline mb-3">Master conversion-focused design principles.</p>
+<button class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1">
+                                        Download PDF <span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Locked Reward (4/10 invites) -->
+<div class="bg-white p-5 rounded-xl border border-[#E2E8F0] relative overflow-hidden opacity-75">
+<div class="absolute top-0 right-0 bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span> 10 Invites Req.
+                            </div>
+<div class="flex gap-4 items-start pt-2">
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-gray-400" data-icon="api">api</span>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface mb-1 text-gray-500">API Integration Guide</h4>
+<p class="font-body-sm text-body-sm text-outline mb-3 text-sm">Connect Make.com with Stripe &amp; Webflow.</p>
+<div class="w-full bg-gray-100 rounded-full h-1.5 mt-2">
+<div class="bg-gray-400 h-1.5 rounded-full" style="width: 40%"></div>
+</div>
+<span class="text-xs text-gray-400 mt-1 block">6 more needed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4.5: Leaderboard -->
+<section class="bg-[#F0F9FF] py-section-padding-mobile md:py-section-padding-desktop px-gutter">
+<div class="max-w-3xl mx-auto">
+<div class="text-center mb-10">
+<h2 class="font-headline-lg text-headline-lg text-on-surface flex items-center justify-center gap-3">
+<span class="text-2xl">🏆</span> Top 10 Referrers
+                </h2>
+<p class="font-body-md text-body-md text-outline mt-2">The top 3 get a free 1-on-1 strategy session.</p>
+</div>
+<div class="bg-white rounded-[16px] border border-[#E2E8F0] premium-shadow overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-sm uppercase tracking-wider font-label-bold text-outline">
+<th class="py-4 px-6 font-semibold">Rank</th>
+<th class="py-4 px-6 font-semibold">Name</th>
+<th class="py-4 px-6 font-semibold text-right">Invites</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-on-surface divide-y divide-[#E2E8F0]">
+<!-- Highlighted Row -->
+<tr class="bg-yellow-50/50 hover:bg-yellow-50 transition-colors">
+<td class="py-4 px-6">
+<div class="w-8 h-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-sm">1</div>
+</td>
+<td class="py-4 px-6 font-bold flex items-center gap-2">
+                                Emmanuel K.
+                                <span class="material-symbols-outlined text-yellow-500 text-[18px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</td>
+<td class="py-4 px-6 text-right font-bold text-[#1A56DB]">42</td>
+</tr>
+<tr class="hover:bg-gray-50 transition-colors">
+<td class="py-4 px-6">
+<div class="w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">2</div>
+</td>
+<td class="py-4 px-6 font-semibold">Sarah J.</td>
+<td class="py-4 px-6 text-right font-semibold">38</td>
+</tr>
+<tr class="hover:bg-gray-50 transition-colors">
+<td class="py-4 px-6">
+<div class="w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">3</div>
+</td>
+<td class="py-4 px-6 font-semibold">Michael C.</td>
+<td class="py-4 px-6 text-right font-semibold">31</td>
+</tr>
+<tr class="hover:bg-gray-50 transition-colors">
+<td class="py-4 px-6 text-outline font-medium pl-9">4</td>
+<td class="py-4 px-6">Jessica T.</td>
+<td class="py-4 px-6 text-right">24</td>
+</tr>
+<tr class="hover:bg-gray-50 transition-colors">
+<td class="py-4 px-6 text-outline font-medium pl-9">5</td>
+<td class="py-4 px-6">David O.</td>
+<td class="py-4 px-6 text-right">19</td>
+</tr>
+<tr class="bg-[#F8FAFC] border-t-2 border-dashed border-[#E2E8F0]">
+<td class="py-4 px-6 text-outline font-medium pl-9">12</td>
+<td class="py-4 px-6 font-semibold text-[#1A56DB]">Alex (You)</td>
+<td class="py-4 px-6 text-right font-bold text-[#1A56DB]">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Footer from JSON (Navigation suppressed on this specific flow, simple footer rendered) -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest flex flex-col md:flex-row justify-between items-center px-gutter py-section-padding-mobile md:py-12 w-full max-w-container-max mx-auto border-t border-outline-variant/20">
+<div class="mb-6 md:mb-0">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface dark:text-on-surface-variant">NoCode Academy</span>
+<p class="font-body-sm text-body-sm text-primary dark:text-primary-fixed-dim mt-2 opacity-80 hover:opacity-100 transition-opacity">© 2024 NoCode Academy. All rights reserved.</p>
+</div>
+<nav class="flex gap-6">
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline" href="#">Contact Support</a>
+</nav>
+</footer>
+<!-- Simple script for countdown animation visual effect -->
+<script>
+        // Decorative pulse effect for the countdown
+        setInterval(() => {
+            const secs = document.getElementById('mins');
+            if(secs) {
+                let current = parseInt(secs.innerText);
+                if(current > 0) {
+                    // Just for visual effect in the static mockup
+                    secs.style.opacity = '0.5';
+                    setTimeout(() => { secs.style.opacity = '1'; }, 150);
+                }
+            }
+        }, 60000);
+
+        // TODO(backend): replace the static "ALEX123" referral code with one generated
+        // per-user by your backend/database, and track click-throughs server-side.
+        const copyBtn = document.getElementById('copy-referral-link');
+        const referralInput = document.getElementById('referral-link');
+        if (copyBtn && referralInput) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(referralInput.value).then(() => {
+                    const label = copyBtn.querySelector('span:last-child') || copyBtn;
+                    const original = label.textContent;
+                    label.textContent = ' Copied!';
+                    setTimeout(() => { label.textContent = original; }, 1500);
+                });
+            });
+        }
+    </script>
+</body></html>
