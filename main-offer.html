@@ -5,6 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NoCode Academy - Main Offer</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<script src="./assets/js/convex-client.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -192,8 +194,8 @@
 </li>
 </ul>
 </div>
-<!-- TODO(backend): wire this button to your payment gateway (Paystack/Flutterwave) checkout for the ₦3,500 tier -->
-<a class="w-full max-w-md bg-primary-container text-on-primary font-label-bold text-label-bold py-4 px-8 rounded-lg hover:bg-primary transition-colors soft-shadow text-[18px] mb-6 flex items-center justify-center" href="dashboard.html">
+<!-- TODO(backend): a real payment gateway (Paystack/Flutterwave) checkout should open here; the Convex mutation below just records purchase intent -->
+<a class="w-full max-w-md bg-primary-container text-on-primary font-label-bold text-label-bold py-4 px-8 rounded-lg hover:bg-primary transition-colors soft-shadow text-[18px] mb-6 flex items-center justify-center" href="dashboard.html" id="buy-main-offer">
                     Buy Recordings + Ebook for ₦3,500
                     <span class="material-symbols-outlined ml-2" data-icon="arrow_forward">arrow_forward</span>
 </a>
@@ -219,4 +221,18 @@
             </div>
 </div>
 </footer>
+<script>
+    document.getElementById('buy-main-offer').addEventListener('click', async function (e) {
+        e.preventDefault();
+        var lead = window.nca.getLead();
+        if (lead && lead.email) {
+            try {
+                await window.ncaClient.mutation('purchases:create', { leadEmail: lead.email, tier: 'main_3500' });
+            } catch (err) {
+                console.error('Failed to record purchase in Convex:', err);
+            }
+        }
+        window.location.href = 'dashboard.html';
+    });
+</script>
 </body></html>

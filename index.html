@@ -5,6 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NoCode Academy - 7-Day Bootcamp Squeeze Page</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<script src="./assets/js/convex-client.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -408,21 +410,35 @@
         var timer = setInterval(tick, 1000);
     })();
 
-    // TODO(backend): Replace this localStorage placeholder with a real POST to your
-    // email/CRM provider (e.g. Mailchimp, ConvertKit) or your own lead-capture API.
-    // The funnel currently stores the lead client-side only so the static pages
-    // can be demoed end-to-end on GitHub Pages before the backend is wired up.
-    document.getElementById('lead-form').addEventListener('submit', function (e) {
+    // Attribute this signup to whoever shared the link, if any (?ref=<email>).
+    var referredByEmail = new URLSearchParams(window.location.search).get('ref') || undefined;
+
+    document.getElementById('lead-form').addEventListener('submit', async function (e) {
         e.preventDefault();
+        var submitBtn = e.target.querySelector('button[type="submit"]');
+        var originalLabel = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Submitting…';
+
         var lead = {
             firstName: document.getElementById('firstName').value,
             lastName: document.getElementById('lastName').value,
             email: document.getElementById('email').value,
             phone: document.getElementById('phone').value,
-            capturedAt: new Date().toISOString()
         };
-        localStorage.setItem('nca_lead', JSON.stringify(lead));
-        window.location.href = 'main-offer.html';
+
+        try {
+            await window.ncaClient.mutation('leads:create', Object.assign({}, lead, { referredByEmail: referredByEmail }));
+            // Remember who this is locally so the offer/dashboard pages can
+            // attach purchases and referrals to the right lead without a login.
+            window.nca.setLead(lead);
+            window.location.href = 'main-offer.html';
+        } catch (err) {
+            console.error('Failed to save lead to Convex:', err);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalLabel;
+            alert('Something went wrong saving your details. Please try again.');
+        }
     });
 </script>
 </body></html>

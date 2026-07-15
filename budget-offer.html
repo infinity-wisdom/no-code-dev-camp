@@ -5,6 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Budget Offer - Just Recordings</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<script src="./assets/js/convex-client.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -137,15 +139,15 @@
 <p class="font-body-md text-body-md text-on-surface mb-8">
                     For just <strong>₦2,500 extra</strong> (Total ₦5,000), get LIVE daily sessions, Telegram community access, and the referral tracker dashboard to unlock exclusive guidebooks.
                 </p>
-<!-- TODO(backend): route this to your ₦5,000 live-cohort checkout once the payment gateway is connected -->
-<a class="w-full bg-primary-container text-on-primary py-4 px-6 rounded-lg font-label-bold text-[18px] hover:bg-primary transition-colors focus:outline-none focus:ring-4 focus:ring-primary-container/30 flex items-center justify-center" href="dashboard.html">
+<!-- TODO(backend): a real payment gateway checkout for the ₦5,000 tier should open here; the Convex mutation below just records purchase intent -->
+<a class="w-full bg-primary-container text-on-primary py-4 px-6 rounded-lg font-label-bold text-[18px] hover:bg-primary transition-colors focus:outline-none focus:ring-4 focus:ring-primary-container/30 flex items-center justify-center" href="dashboard.html" id="buy-live-offer">
                     See the ₦5,000 Live Offer
                 </a>
 </div>
 <!-- Secondary Action -->
 <div class="pt-4">
-<!-- TODO(backend): route this to your ₦2,500 checkout once the payment gateway is connected -->
-<a class="text-primary-container font-body-md text-body-md underline hover:text-primary transition-colors bg-transparent border-0" href="dashboard.html">
+<!-- TODO(backend): a real payment gateway checkout for the ₦2,500 tier should open here; the Convex mutation below just records purchase intent -->
+<a class="text-primary-container font-body-md text-body-md underline hover:text-primary transition-colors bg-transparent border-0" href="dashboard.html" id="buy-budget-offer">
                     Just give me the videos for ₦2,500
                 </a>
 </div>
@@ -167,4 +169,23 @@
             </div>
 </div>
 </footer>
+<script>
+    function recordPurchaseAndGo(tier, targetHref) {
+        return async function (e) {
+            e.preventDefault();
+            var lead = window.nca.getLead();
+            if (lead && lead.email) {
+                try {
+                    await window.ncaClient.mutation('purchases:create', { leadEmail: lead.email, tier: tier });
+                } catch (err) {
+                    console.error('Failed to record purchase in Convex:', err);
+                }
+            }
+            window.location.href = targetHref;
+        };
+    }
+
+    document.getElementById('buy-live-offer').addEventListener('click', recordPurchaseAndGo('live_5000', 'dashboard.html'));
+    document.getElementById('buy-budget-offer').addEventListener('click', recordPurchaseAndGo('budget_2500', 'dashboard.html'));
+</script>
 </body></html>

@@ -5,6 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Premium Dashboard - NoCode Academy</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<script src="./assets/js/convex-client.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -203,8 +205,8 @@
 </div>
 </div>
 <!-- Conditional Unlock Button -->
-<!-- TODO(backend): wire this to your payment gateway (Paystack/Flutterwave) for the ₦5,000 live-access upsell -->
-<button class="bg-white text-[#1A56DB] font-label-bold text-label-bold px-8 py-4 rounded-lg shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-2 group">
+<!-- TODO(backend): a real payment gateway checkout should open here; the Convex mutation below just records purchase intent -->
+<button class="bg-white text-[#1A56DB] font-label-bold text-label-bold px-8 py-4 rounded-lg shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-2 group" id="unlock-live-btn">
 <span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
                 Pay ₦5,000 to Unlock Live Access
                 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
@@ -308,35 +310,18 @@
 <div class="pt-4 border-t border-[#E2E8F0]">
 <div class="flex justify-between items-end mb-2">
 <span class="font-label-bold text-label-bold text-on-surface">Your Progress</span>
-<span class="font-body-sm text-body-sm text-primary-container font-semibold">Invited 4 of 10 friends</span>
+<span class="font-body-sm text-body-sm text-primary-container font-semibold" id="progress-label">Invited 0 of 10 friends</span>
 </div>
 <div class="w-full bg-[#E2E8F0] rounded-full h-2 mb-8">
-<div class="bg-[#1A56DB] h-2 rounded-full transition-all duration-1000" style="width: 40%"></div>
+<div class="bg-[#1A56DB] h-2 rounded-full transition-all duration-1000" id="progress-bar-fill" style="width: 0%"></div>
 </div>
 </div>
 <!-- Recent Referrals List -->
 <div>
 <h4 class="font-label-bold text-label-bold text-on-surface mb-4">Recent Referrals</h4>
-<ul class="space-y-3">
-<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg">
-<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-label-bold text-sm">S</div>
-<span class="font-body-md text-body-md flex-1">Sarah Jenkins</span>
-<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>
-</li>
-<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg">
-<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-label-bold text-sm">M</div>
-<span class="font-body-md text-body-md flex-1">Michael Chen</span>
-<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>
-</li>
-<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg">
-<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-label-bold text-sm">D</div>
-<span class="font-body-md text-body-md flex-1">David O.</span>
-<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>
-</li>
-<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg opacity-60">
-<div class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-label-bold text-sm">P</div>
-<span class="font-body-md text-body-md flex-1">Pending Invite</span>
-<span class="text-outline text-xs">Waiting...</span>
+<ul class="space-y-3" id="recent-referrals-list">
+<li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg opacity-60" id="recent-referrals-empty">
+<span class="font-body-sm text-body-sm text-outline">No referrals yet — share your link to get started!</span>
 </li>
 </ul>
 </div>
@@ -345,40 +330,44 @@
 <div class="lg:col-span-5 bg-[#F8FAFC] p-6 md:p-8 rounded-[16px] border border-[#E2E8F0]">
 <h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-6">Unlockable Rewards</h3>
 <div class="space-y-4">
-<!-- Unlocked Reward (4/3 invites) -->
-<div class="bg-white p-5 rounded-xl border border-green-200 premium-shadow relative overflow-hidden group">
-<div class="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> Unlocked
+<!-- Reward 1: unlocks at 3 invites -->
+<div class="bg-white p-5 rounded-xl border border-[#E2E8F0] relative overflow-hidden opacity-75" id="reward-3-card">
+<div class="absolute top-0 right-0 bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1" id="reward-3-badge">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span> 3 Invites Req.
                             </div>
 <div class="flex gap-4 items-start pt-2">
-<div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-green-600" data-icon="design_services">design_services</span>
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0" id="reward-3-icon-wrap">
+<span class="material-symbols-outlined text-gray-400" data-icon="design_services" id="reward-3-icon">design_services</span>
 </div>
 <div>
-<h4 class="font-label-bold text-label-bold text-on-surface mb-1">UI/UX Cheatsheet</h4>
+<h4 class="font-label-bold text-label-bold text-gray-500 mb-1" id="reward-3-title">UI/UX Cheatsheet</h4>
 <p class="font-body-sm text-body-sm text-outline mb-3">Master conversion-focused design principles.</p>
-<button class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1">
+<button class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1 hidden" id="reward-3-download">
                                         Download PDF <span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
 </button>
+<span class="text-xs text-gray-400 mt-1 block" id="reward-3-remaining">3 more needed</span>
 </div>
 </div>
 </div>
-<!-- Locked Reward (4/10 invites) -->
-<div class="bg-white p-5 rounded-xl border border-[#E2E8F0] relative overflow-hidden opacity-75">
-<div class="absolute top-0 right-0 bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1">
+<!-- Reward 2: unlocks at 10 invites -->
+<div class="bg-white p-5 rounded-xl border border-[#E2E8F0] relative overflow-hidden opacity-75" id="reward-10-card">
+<div class="absolute top-0 right-0 bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-bl-lg font-bold flex items-center gap-1" id="reward-10-badge">
 <span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span> 10 Invites Req.
                             </div>
 <div class="flex gap-4 items-start pt-2">
-<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-gray-400" data-icon="api">api</span>
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0" id="reward-10-icon-wrap">
+<span class="material-symbols-outlined text-gray-400" data-icon="api" id="reward-10-icon">api</span>
 </div>
 <div>
-<h4 class="font-label-bold text-label-bold text-on-surface mb-1 text-gray-500">API Integration Guide</h4>
+<h4 class="font-label-bold text-label-bold mb-1 text-gray-500" id="reward-10-title">API Integration Guide</h4>
 <p class="font-body-sm text-body-sm text-outline mb-3 text-sm">Connect Make.com with Stripe &amp; Webflow.</p>
 <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2">
-<div class="bg-gray-400 h-1.5 rounded-full" style="width: 40%"></div>
+<div class="bg-gray-400 h-1.5 rounded-full" id="reward-10-bar" style="width: 0%"></div>
 </div>
-<span class="text-xs text-gray-400 mt-1 block">6 more needed</span>
+<span class="text-xs text-gray-400 mt-1 block" id="reward-10-remaining">10 more needed</span>
+<button class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1 hidden mt-2" id="reward-10-download">
+                                        Download PDF <span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+</button>
 </div>
 </div>
 </div>
@@ -405,46 +394,9 @@
 <th class="py-4 px-6 font-semibold text-right">Invites</th>
 </tr>
 </thead>
-<tbody class="font-body-md text-on-surface divide-y divide-[#E2E8F0]">
-<!-- Highlighted Row -->
-<tr class="bg-yellow-50/50 hover:bg-yellow-50 transition-colors">
-<td class="py-4 px-6">
-<div class="w-8 h-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center font-bold text-sm">1</div>
-</td>
-<td class="py-4 px-6 font-bold flex items-center gap-2">
-                                Emmanuel K.
-                                <span class="material-symbols-outlined text-yellow-500 text-[18px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
-</td>
-<td class="py-4 px-6 text-right font-bold text-[#1A56DB]">42</td>
-</tr>
-<tr class="hover:bg-gray-50 transition-colors">
-<td class="py-4 px-6">
-<div class="w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">2</div>
-</td>
-<td class="py-4 px-6 font-semibold">Sarah J.</td>
-<td class="py-4 px-6 text-right font-semibold">38</td>
-</tr>
-<tr class="hover:bg-gray-50 transition-colors">
-<td class="py-4 px-6">
-<div class="w-8 h-8 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-sm">3</div>
-</td>
-<td class="py-4 px-6 font-semibold">Michael C.</td>
-<td class="py-4 px-6 text-right font-semibold">31</td>
-</tr>
-<tr class="hover:bg-gray-50 transition-colors">
-<td class="py-4 px-6 text-outline font-medium pl-9">4</td>
-<td class="py-4 px-6">Jessica T.</td>
-<td class="py-4 px-6 text-right">24</td>
-</tr>
-<tr class="hover:bg-gray-50 transition-colors">
-<td class="py-4 px-6 text-outline font-medium pl-9">5</td>
-<td class="py-4 px-6">David O.</td>
-<td class="py-4 px-6 text-right">19</td>
-</tr>
-<tr class="bg-[#F8FAFC] border-t-2 border-dashed border-[#E2E8F0]">
-<td class="py-4 px-6 text-outline font-medium pl-9">12</td>
-<td class="py-4 px-6 font-semibold text-[#1A56DB]">Alex (You)</td>
-<td class="py-4 px-6 text-right font-bold text-[#1A56DB]">4</td>
+<tbody class="font-body-md text-on-surface divide-y divide-[#E2E8F0]" id="leaderboard-body">
+<tr id="leaderboard-empty-row">
+<td class="py-6 px-6 text-outline text-center" colspan="3">Referrals will appear here once people start sharing their links.</td>
 </tr>
 </tbody>
 </table>
@@ -478,8 +430,6 @@
             }
         }, 60000);
 
-        // TODO(backend): replace the static "ALEX123" referral code with one generated
-        // per-user by your backend/database, and track click-throughs server-side.
         const copyBtn = document.getElementById('copy-referral-link');
         const referralInput = document.getElementById('referral-link');
         if (copyBtn && referralInput) {
@@ -491,6 +441,131 @@
                     setTimeout(() => { label.textContent = original; }, 1500);
                 });
             });
+        }
+    </script>
+    <script>
+        var lead = window.nca.getLead();
+
+        // Guests who land here without going through the squeeze page get a
+        // static, empty-state dashboard rather than a broken one.
+        if (lead && lead.email) {
+            if (referralInput) {
+                referralInput.value = window.nca.buildReferralLink(lead.email);
+            }
+
+            // --- Referral progress bar + reward unlocks -------------------
+            window.ncaClient.onUpdate('referrals:countForEmail', { email: lead.email }, function (count) {
+                var progressLabel = document.getElementById('progress-label');
+                var progressBar = document.getElementById('progress-bar-fill');
+                if (progressLabel) progressLabel.textContent = 'Invited ' + count + ' of 10 friends';
+                if (progressBar) progressBar.style.width = Math.min(100, (count / 10) * 100) + '%';
+
+                setRewardState('reward-3', count, 3);
+                setRewardState('reward-10', count, 10, true);
+            });
+
+            // --- Recent referrals list -------------------------------------
+            window.ncaClient.onUpdate('referrals:recentForReferrer', { email: lead.email, limit: 5 }, function (rows) {
+                var list = document.getElementById('recent-referrals-list');
+                var emptyRow = document.getElementById('recent-referrals-empty');
+                if (!list) return;
+                if (!rows || rows.length === 0) {
+                    if (emptyRow) emptyRow.style.display = '';
+                    return;
+                }
+                if (emptyRow) emptyRow.style.display = 'none';
+                list.querySelectorAll('[data-referral-row]').forEach(function (el) { el.remove(); });
+                rows.forEach(function (r) {
+                    var li = document.createElement('li');
+                    li.setAttribute('data-referral-row', '');
+                    li.className = 'flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg';
+                    var initial = (r.referredName || r.referredEmail || '?').trim().charAt(0).toUpperCase();
+                    li.innerHTML =
+                        '<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-label-bold text-sm">' + initial + '</div>' +
+                        '<span class="font-body-md text-body-md flex-1">' + (r.referredName || r.referredEmail) + '</span>' +
+                        '<span class="bg-[#F0F9FF] text-[#38BDF8] px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">Joined</span>';
+                    list.appendChild(li);
+                });
+            });
+
+            // --- Live-access purchase button --------------------------------
+            var unlockBtn = document.getElementById('unlock-live-btn');
+            if (unlockBtn) {
+                unlockBtn.addEventListener('click', async function () {
+                    var original = unlockBtn.innerHTML;
+                    unlockBtn.disabled = true;
+                    unlockBtn.innerHTML = 'Processing…';
+                    try {
+                        await window.ncaClient.mutation('purchases:create', { leadEmail: lead.email, tier: 'live_5000' });
+                        unlockBtn.innerHTML = 'Payment Pending Confirmation';
+                    } catch (err) {
+                        console.error('Failed to record purchase in Convex:', err);
+                        unlockBtn.disabled = false;
+                        unlockBtn.innerHTML = original;
+                    }
+                });
+            }
+        }
+
+        // --- Leaderboard (shown to everyone, not just logged-in leads) -----
+        window.ncaClient.onUpdate('referrals:leaderboard', { limit: 10 }, function (rows) {
+            var body = document.getElementById('leaderboard-body');
+            var emptyRow = document.getElementById('leaderboard-empty-row');
+            if (!body) return;
+            if (!rows || rows.length === 0) {
+                if (emptyRow) emptyRow.style.display = '';
+                return;
+            }
+            if (emptyRow) emptyRow.style.display = 'none';
+            body.querySelectorAll('[data-leaderboard-row]').forEach(function (el) { el.remove(); });
+            rows.forEach(function (r, i) {
+                var rank = i + 1;
+                var isYou = lead && lead.email && r.email === lead.email.toLowerCase();
+                var tr = document.createElement('tr');
+                tr.setAttribute('data-leaderboard-row', '');
+                tr.className = isYou
+                    ? 'bg-[#F0F9FF] border-l-4 border-[#1A56DB] transition-colors'
+                    : (rank <= 3 ? 'bg-yellow-50/50 hover:bg-yellow-50 transition-colors' : 'hover:bg-gray-50 transition-colors');
+                tr.innerHTML =
+                    '<td class="py-4 px-6"><div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ' +
+                        (rank <= 3 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600') + '">' + rank + '</div></td>' +
+                    '<td class="py-4 px-6 font-semibold' + (isYou ? ' text-[#1A56DB]' : '') + '">' + r.name + (isYou ? ' (You)' : '') + '</td>' +
+                    '<td class="py-4 px-6 text-right font-bold' + (isYou ? ' text-[#1A56DB]' : '') + '">' + r.count + '</td>';
+                body.appendChild(tr);
+            });
+        });
+
+        /** Toggle a reward card between its locked and unlocked visual state. */
+        function setRewardState(prefix, count, threshold, hasProgressBar) {
+            var unlocked = count >= threshold;
+            var card = document.getElementById(prefix + '-card');
+            var badge = document.getElementById(prefix + '-badge');
+            var iconWrap = document.getElementById(prefix + '-icon-wrap');
+            var icon = document.getElementById(prefix + '-icon');
+            var title = document.getElementById(prefix + '-title');
+            var download = document.getElementById(prefix + '-download');
+            var remaining = document.getElementById(prefix + '-remaining');
+            var bar = hasProgressBar ? document.getElementById(prefix + '-bar') : null;
+            if (!card) return;
+
+            if (unlocked) {
+                card.classList.remove('opacity-75', 'border-[#E2E8F0]');
+                card.classList.add('border-green-200', 'premium-shadow');
+                badge.classList.remove('bg-gray-200', 'text-gray-600');
+                badge.classList.add('bg-green-500', 'text-white');
+                badge.innerHTML = '<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> Unlocked';
+                iconWrap.classList.remove('bg-gray-50');
+                iconWrap.classList.add('bg-green-50');
+                icon.classList.remove('text-gray-400');
+                icon.classList.add('text-green-600');
+                title.classList.remove('text-gray-500');
+                if (download) download.classList.remove('hidden');
+                if (remaining) remaining.classList.add('hidden');
+                if (bar) { bar.style.width = '100%'; bar.classList.remove('bg-gray-400'); bar.classList.add('bg-green-500'); }
+            } else {
+                if (remaining) remaining.textContent = (threshold - count) + ' more needed';
+                if (bar) bar.style.width = Math.min(100, (count / threshold) * 100) + '%';
+            }
         }
     </script>
 </body></html>
