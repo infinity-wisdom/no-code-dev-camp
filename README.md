@@ -6,7 +6,7 @@ Static sales funnel for the "7-Day No-Code E-Commerce Bootcamp." Built with Tail
 
 | Page | File | Purpose |
 |---|---|---|
-| Squeeze page | `index.html` | Captures name/email/phone, then routes into the offer ladder |
+| Squeeze page | `index.html` | Hero + roadmap, founder story, "who it's for," FAQ, and lead-capture form |
 | Main offer (₦3,500) | `main-offer.html` | Video recordings + ebook; downsell link to the budget offer |
 | Budget offer (₦2,500) | `budget-offer.html` | Recordings-only; upsell back toward the ₦5,000 live tier |
 | Dashboard | `dashboard.html` | Post-purchase hub — countdown, community links, referral tracker |
