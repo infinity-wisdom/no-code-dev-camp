@@ -3,11 +3,34 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>NoCode Academy - 7-Day Bootcamp Squeeze Page</title>
+<title>CodeCave — NoCode Developers Camp</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
 <link href="./assets/css/animations.css" rel="stylesheet"/>
 <script src="./assets/js/convex-client.js"></script>
+<script>
+    // Returning-visitor check, run as early as possible to avoid flashing
+    // the squeeze page at someone who's already signed up.
+    //
+    // Primary signal: localStorage on this browser/device (instant, reliable).
+    // Fallback signal: a hashed-IP match on the backend, for a returning
+    // visitor on a *different* browser/device — best-effort only, since IPs
+    // can be shared (offices, campuses, carrier-grade NAT on mobile networks).
+    // See convex/http.ts for the full explanation of that tradeoff.
+    (function () {
+        var lead = window.nca.getLead();
+        if (lead && lead.email) {
+            window.location.replace('dashboard.html');
+            return;
+        }
+        window.nca.recognizeReturningLead().then(function (result) {
+            if (result && result.recognized && result.lead) {
+                window.nca.setLead(result.lead);
+                window.location.replace('dashboard.html');
+            }
+        });
+    })();
+</script>
 <script src="./assets/js/animations.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
@@ -114,9 +137,18 @@
 <div class="absolute inset-0 z-0 pointer-events-none" style="background: radial-gradient(circle at top right, #F0F9FF 0%, transparent 60%); opacity: 0.7;"></div>
 <!-- Header (Logo Only for Squeeze Page) -->
 <header class="w-full max-w-container-max mx-auto px-gutter py-6 relative z-10 flex items-center justify-between">
-<a aria-label="NoCode Academy Home" class="font-headline-lg text-headline-lg font-extrabold text-primary" href="#">
-            NoCode Academy
-        </a>
+<!-- TODO(design): placeholder CodeCave mark — swap for the real logo file when available -->
+<a aria-label="CodeCave — NoCode Developers Camp Home" class="flex items-center gap-3" href="index.html">
+<svg class="w-10 h-10 flex-shrink-0" fill="none" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1A56DB" height="40" rx="10" width="40"></rect>
+<path d="M16 13L10 20L16 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M24 13L30 20L24 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span class="leading-tight text-left">
+<span class="block font-headline-lg text-headline-lg font-extrabold text-primary">CodeCave</span>
+<span class="block font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider text-[10px]">NoCode Developers Camp</span>
+</span>
+</a>
 </header>
 <!-- Main Content -->
 <main class="flex-grow w-full max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24">
@@ -360,8 +392,18 @@
 <footer class="bg-surface-container-low mt-auto border-t border-[#E2E8F0]">
 <div class="flex flex-col md:flex-row justify-between items-center px-gutter py-section-padding-mobile md:py-12 w-full max-w-container-max mx-auto">
 <div class="mb-6 md:mb-0 text-center md:text-left">
-<div class="font-headline-lg text-headline-lg font-bold text-on-surface mb-2">NoCode Academy</div>
-<p class="font-body-sm text-body-sm text-outline">© 2024 NoCode Academy. All rights reserved.</p>
+<div class="flex items-center gap-3 mb-2">
+<svg class="w-8 h-8 flex-shrink-0" fill="none" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1A56DB" height="40" rx="10" width="40"></rect>
+<path d="M16 13L10 20L16 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M24 13L30 20L24 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<div class="leading-tight text-left">
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface">CodeCave</div>
+<div class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider text-[10px]">NoCode Developers Camp</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-outline">© 2026 CodeCave. All rights reserved.</p>
 </div>
 <nav>
 <ul class="flex flex-wrap justify-center md:justify-end gap-6">
@@ -435,6 +477,7 @@
             // Remember who this is locally so the offer/dashboard pages can
             // attach purchases and referrals to the right lead without a login.
             window.nca.setLead(lead);
+            window.nca.recordSignupIp(lead.email);
             window.ncaConfetti(submitBtn);
             submitBtn.innerHTML = "You're in! 🎉";
             setTimeout(function () {

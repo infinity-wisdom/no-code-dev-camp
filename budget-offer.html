@@ -143,7 +143,7 @@
 <p class="font-body-md text-body-md text-on-surface mb-8">
                     For just <strong>₦2,500 extra</strong> (Total ₦5,000), get LIVE daily sessions, Telegram community access, and the referral tracker dashboard to unlock exclusive guidebooks.
                 </p>
-<!-- TODO(backend): a real payment gateway checkout for the ₦5,000 tier should open here; the Convex mutation below just records purchase intent -->
+<!-- This button intentionally does NOT open checkout — it takes the lead to their dashboard, where the "Unlock Live Access" button handles the ₦5,000 payment instead -->
 <a class="w-full bg-primary-container text-on-primary py-4 px-6 rounded-lg font-label-bold text-[18px] hover:bg-primary transition-colors focus:outline-none focus:ring-4 focus:ring-primary-container/30 flex items-center justify-center" data-bounce="" href="dashboard.html" id="buy-live-offer">
                     See the ₦5,000 Live Offer ✨
                 </a>
@@ -154,22 +154,35 @@
 <a class="text-primary-container font-body-md text-body-md underline hover:text-primary transition-colors bg-transparent border-0" href="dashboard.html" id="buy-budget-offer">
                     Just give me the videos for ₦2,500
                 </a>
+<div class="mt-3">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="dashboard.html" id="skip-to-dashboard">
+                        Not ready to pay yet? Go to your dashboard →
+                    </a>
+</div>
 </div>
 </div>
 </main>
 <!-- Footer from JSON -->
 <footer class="bg-surface-container-low dark:bg-surface-container-highest w-full mt-auto">
 <div class="flex flex-col md:flex-row justify-between items-center px-gutter py-section-padding-mobile md:py-12 w-full max-w-container-max mx-auto">
-<div class="font-headline-lg text-headline-lg font-bold text-on-surface dark:text-on-surface-variant mb-6 md:mb-0">
-                NoCode Academy
-            </div>
+<div class="flex items-center gap-3 mb-6 md:mb-0">
+<svg class="w-8 h-8 flex-shrink-0" fill="none" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1A56DB" height="40" rx="10" width="40"></rect>
+<path d="M16 13L10 20L16 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M24 13L30 20L24 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<div class="leading-tight text-left">
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface dark:text-on-surface-variant">CodeCave</div>
+<div class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider text-[10px]">NoCode Developers Camp</div>
+</div>
+</div>
 <nav class="flex flex-col md:flex-row items-center gap-4 md:gap-8 mb-6 md:mb-0">
 <a class="text-on-surface-variant dark:text-outline-variant font-body-sm text-body-sm hover:text-primary transition-colors underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
 <a class="text-on-surface-variant dark:text-outline-variant font-body-sm text-body-sm hover:text-primary transition-colors underline opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
 <a class="text-on-surface-variant dark:text-outline-variant font-body-sm text-body-sm hover:text-primary transition-colors underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Support</a>
 </nav>
 <div class="text-primary dark:text-primary-fixed-dim font-body-sm text-body-sm">
-                © 2024 NoCode Academy. All rights reserved.
+                © 2026 CodeCave. All rights reserved.
             </div>
 </div>
 </footer>
@@ -186,7 +199,18 @@
         };
     }
 
-    document.getElementById('buy-live-offer').addEventListener('click', openCheckout('live_5000'));
+    // The ₦5,000 live offer no longer opens checkout from this page — it just
+    // takes the lead straight to their dashboard, where they can pay from the
+    // "Unlock Live Access" button. The link's native href handles that
+    // navigation; we only need to intercept if they haven't signed up yet.
+    document.getElementById('buy-live-offer').addEventListener('click', function (e) {
+        var lead = window.nca.getLead();
+        if (!lead || !lead.email) {
+            e.preventDefault();
+            window.location.href = 'index.html';
+        }
+    });
+
     document.getElementById('buy-budget-offer').addEventListener('click', openCheckout('budget_2500'));
 </script>
 </body></html>

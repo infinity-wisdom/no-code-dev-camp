@@ -1,4 +1,4 @@
-import { mutation, internalMutation, internalQuery } from "./_generated/server";
+import { mutation, query, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { CURRENCY, TIER_PRICING } from "./pricing";
 
@@ -83,5 +83,25 @@ export const getByEmail = internalQuery({
       .query("purchases")
       .withIndex("by_email", (q) => q.eq("leadEmail", args.email.trim().toLowerCase()))
       .collect();
+  },
+});
+
+/**
+ * Public — deliberately narrow. Returns only the list of tiers this email
+ * has a "paid" purchase for (e.g. ["live_5000"]), never full purchase
+ * records (amounts, txRef, Flutterwave transaction IDs, etc.). This is what
+ * dashboard.html uses to decide whether to unlock the Telegram community
+ * card — everyone who signs up gets a dashboard regardless of payment
+ * status, but Telegram access specifically requires having paid for the
+ * ₦5,000 live tier.
+ */
+export const getPaidTiersForEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const purchases = await ctx.db
+      .query("purchases")
+      .withIndex("by_email", (q) => q.eq("leadEmail", args.email.trim().toLowerCase()))
+      .collect();
+    return purchases.filter((p) => p.status === "paid").map((p) => p.tier);
   },
 });

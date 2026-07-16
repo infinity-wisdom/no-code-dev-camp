@@ -1,6 +1,8 @@
-# NoCode Academy – 7-Day Bootcamp Funnel
+# CodeCave — NoCode Developers Camp Funnel
 
 Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](https://convex.dev). Frontend is static HTML + Tailwind CSS (via CDN) using the **Velocity Blue** design system — see [`DESIGN.md`](./DESIGN.md) for the full color, type, and component spec.
+
+**Logo note:** the CodeCave mark used in the header/footers (`<svg>` icon + "CodeCave" / "NoCode Developers Camp" wordmark) is a placeholder built from scratch — there's no real logo file in this project yet. Swap it for the real one by replacing the inline `<svg>...</svg>` block (search for `TODO(design)` in `index.html`, and the matching markup in the other three files' footers) with an `<img>` tag pointing at your actual logo asset.
 
 ## Pages & Funnel Flow
 
@@ -8,12 +10,14 @@ Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](htt
 |---|---|---|
 | Squeeze page | `index.html` | Hero + roadmap, founder story, "who it's for," FAQ, countdown, and lead-capture form |
 | Main offer (₦3,500) | `main-offer.html` | Video recordings + ebook; downsell link to the budget offer |
-| Budget offer (₦2,500) | `budget-offer.html` | Recordings-only; upsell back toward the ₦5,000 live tier |
-| Dashboard | `dashboard.html` | Post-purchase hub — countdown, community links, live referral tracker & leaderboard |
+| Budget offer (₦2,500) | `budget-offer.html` | Recordings-only; the ₦5,000 live-offer button and the "not ready to pay" link both skip straight to the dashboard, no checkout on this page |
+| Dashboard | `dashboard.html` | Home base for every signed-up lead, paid or not — countdown, community links, live referral tracker & leaderboard, and the ₦5,000 "Unlock Live Access" checkout |
+
+Every lead who signs up reaches the dashboard, whether or not they've paid for anything — main-offer.html and budget-offer.html both have a "not ready to pay yet? Go to your dashboard" link for exactly that. Payment for any tier (including the ₦5,000 live upgrade) can happen from the dashboard itself via the "Unlock Live Access" button, not just from the offer pages. The **Telegram community card** on the dashboard is the one thing actually gated: it stays locked until `purchases:getPaidTiersForEmail` shows a paid `live_5000` purchase for that lead — WhatsApp, the referral tracker, and the reward unlocks are all available to everyone regardless of payment.
 
 ```
-index.html  →  main-offer.html  →  dashboard.html
-                    ↓  (downsell)        ↑ (upsell)
+index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
+                    ↓  (downsell)         ↑ (all paths, paid or not, lead here)
               budget-offer.html ─────────┘
 ```
 
@@ -32,11 +36,11 @@ index.html  →  main-offer.html  →  dashboard.html
 |---|---|
 | `convex/schema.ts` | Defines `leads`, `purchases`, and `referrals` tables |
 | `convex/pricing.ts` | Canonical tier prices — the source of truth the client can never override |
-| `convex/leads.ts` | `leads:create` — saves a signup and, if they arrived via `?ref=<email>`, records the referral in the same transaction |
-| `convex/purchases.ts` | `purchases:create` (public — records purchase intent as `"pending"` with a server-generated `txRef` and price); internal query/mutations used only by verified payment flows |
+| `convex/leads.ts` | `leads:create` — saves a signup and, if they arrived via `?ref=<email>`, records the referral in the same transaction; internal helpers back the IP-recognition routes below |
+| `convex/purchases.ts` | `purchases:create` (public — records purchase intent as `"pending"` with a server-generated `txRef` and price); `purchases:getPaidTiersForEmail` (public — powers the Telegram unlock on the dashboard); internal query/mutations used only by verified payment flows |
 | `convex/payments.ts` | `payments:verifyTransaction` — called from the browser after Flutterwave's modal reports success; re-checks the transaction server-side against Flutterwave's API before trusting it |
 | `convex/referrals.ts` | `referrals:countForEmail`, `referrals:recentForReferrer`, `referrals:leaderboard` — power the dashboard's progress bar, recent-referrals list, and top-10 table in real time |
-| `convex/http.ts` | Flutterwave webhook at `/payments/webhook` — verifies the request, then re-verifies server-to-server before marking a purchase paid |
+| `convex/http.ts` | Flutterwave webhook at `/payments/webhook`; `/leads/record-ip` and `/leads/recognize` for the returning-visitor check below |
 
 The frontend loads Convex via the [script-tag client](https://docs.convex.dev/client/javascript/script-tag) (no bundler needed) — see `assets/js/convex-client.js`, which every page includes.
 
@@ -66,6 +70,22 @@ npx convex deploy
 ```
 
 This gives you a **production** deployment URL — swap that into `convex-client.js` before pushing to GitHub Pages.
+
+## Returning-Visitor Recognition
+
+Someone who's already signed up shouldn't have to see the squeeze page again. `index.html` checks, in order:
+
+1. **localStorage** (same browser/device) — instant and reliable, this is the primary check.
+2. **Hashed-IP match** (different browser/device, same network) — a fallback for when localStorage is empty. On signup, a salted SHA-256 hash of the visitor's IP is recorded against their lead (never the raw IP); on a later visit from an unrecognized browser, that hash is looked up via `GET /leads/recognize`.
+
+If either check succeeds, the visitor is redirected straight to `dashboard.html` before the squeeze page renders.
+
+**Worth knowing:** IP-based matching is a convenience, not a guarantee. Many people share one public IP — offices, campuses, and especially carrier-grade NAT on mobile networks, which is common in Nigeria — so this can occasionally recognize the *wrong* person on the same network as someone who's already signed up. That's why it only returns a first name/email (never anything more sensitive) and only serves as a fallback behind the localStorage check, not the primary mechanism. If this false-positive rate matters for your audience, the simplest fix is to drop the IP fallback and rely on localStorage alone (remove the `recognizeReturningLead()` call in `index.html`).
+
+Requires one more env var:
+```bash
+npx convex env set IP_HASH_SALT <a-long-random-string>
+```
 
 ## Payments: Flutterwave
 
@@ -100,6 +120,7 @@ Checkout uses [Flutterwave's Inline checkout](https://developer.flutterwave.com/
 Everything data-related (leads, purchases, referrals, leaderboard) and payment processing (Flutterwave checkout + server-side verification + webhook) are now live via Convex. What's still a `TODO(backend)` in the code:
 
 - **Flutterwave public/secret keys and webhook hash** — placeholders until you follow the setup steps above
+- **Telegram invite link** — `dashboard.html` has a placeholder `TELEGRAM_INVITE_LINK`; replace it with your real group/channel invite link once you have one
 - **Transactional emails** (welcome email, purchase receipt) — not yet implemented; would likely be triggered from `convex/payments.ts` once a purchase is marked `"paid"`
 - **Live/test mode switch** — currently points at whichever Flutterwave keys you've configured; worth double-checking you're on Test keys until you're ready to accept real money
 

@@ -3,7 +3,7 @@
 <html class="scroll-smooth" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Premium Dashboard - NoCode Academy</title>
+<title>CodeCave — NoCode Developers Camp: Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
 <link href="./assets/css/animations.css" rel="stylesheet"/>
@@ -233,22 +233,22 @@
 <h3 class="font-label-bold text-label-bold text-on-surface text-lg mb-2">Join Info Channel</h3>
 <p class="font-body-sm text-body-sm text-outline">Get real-time updates and announcements via WhatsApp.</p>
 </a>
-<!-- Right Card: Telegram (Locked) -->
-<div class="bg-white border border-[#E2E8F0] rounded-[16px] p-8 premium-shadow relative flex flex-col items-center justify-center text-center overflow-hidden min-h-[240px]">
+<!-- Right Card: Telegram — unlocked only after a paid ₦5,000 live_5000 purchase -->
+<a class="bg-white border border-[#E2E8F0] rounded-[16px] p-8 premium-shadow relative flex flex-col items-center justify-center text-center overflow-hidden min-h-[240px] pointer-events-none" href="#" id="telegram-card">
 <!-- Locked Overlay -->
-<div class="absolute inset-0 bg-[#CBD5E1]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+<div class="absolute inset-0 bg-[#CBD5E1]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center" id="telegram-lock-overlay">
 <div class="bg-white p-4 rounded-full shadow-sm mb-3">
 <span class="material-symbols-outlined text-outline" data-icon="lock">lock</span>
 </div>
-<span class="font-label-bold text-label-bold text-on-surface">Unlock with Payment</span>
+<span class="font-label-bold text-label-bold text-on-surface" id="telegram-lock-label">Unlock with ₦5,000 Payment</span>
 </div>
 <!-- Content underneath -->
-<div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 opacity-40">
+<div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 opacity-40" id="telegram-icon-wrap">
 <span class="material-symbols-outlined text-blue-500 text-3xl" data-icon="forum">forum</span>
 </div>
-<h3 class="font-label-bold text-label-bold text-on-surface text-lg mb-2 opacity-40">Premium Discussion Group</h3>
-<p class="font-body-sm text-body-sm text-outline opacity-40">Exclusive networking and direct Q&amp;A via Telegram.</p>
-</div>
+<h3 class="font-label-bold text-label-bold text-on-surface text-lg mb-2 opacity-40" id="telegram-title">Premium Discussion Group</h3>
+<p class="font-body-sm text-body-sm text-outline opacity-40" id="telegram-description">Exclusive networking and direct Q&amp;A via Telegram.</p>
+</a>
 </div>
 </div>
 </section>
@@ -409,9 +409,17 @@
 </section>
 <!-- Footer from JSON (Navigation suppressed on this specific flow, simple footer rendered) -->
 <footer class="bg-surface-container-low dark:bg-surface-container-highest flex flex-col md:flex-row justify-between items-center px-gutter py-section-padding-mobile md:py-12 w-full max-w-container-max mx-auto border-t border-outline-variant/20">
-<div class="mb-6 md:mb-0">
-<span class="font-headline-lg text-headline-lg font-bold text-on-surface dark:text-on-surface-variant">NoCode Academy</span>
-<p class="font-body-sm text-body-sm text-primary dark:text-primary-fixed-dim mt-2 opacity-80 hover:opacity-100 transition-opacity">© 2024 NoCode Academy. All rights reserved.</p>
+<div class="mb-6 md:mb-0 flex items-center gap-3">
+<svg class="w-8 h-8 flex-shrink-0" fill="none" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1A56DB" height="40" rx="10" width="40"></rect>
+<path d="M16 13L10 20L16 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M24 13L30 20L24 27" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<div class="leading-tight text-left">
+<span class="block font-headline-lg text-headline-lg font-bold text-on-surface dark:text-on-surface-variant">CodeCave</span>
+<span class="block font-label-bold text-label-bold text-on-surface-variant dark:text-outline-variant uppercase tracking-wider text-[10px]">NoCode Developers Camp</span>
+<p class="font-body-sm text-body-sm text-primary dark:text-primary-fixed-dim mt-2 opacity-80 hover:opacity-100 transition-opacity">© 2026 CodeCave. All rights reserved.</p>
+</div>
 </div>
 <nav class="flex gap-6">
 <a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
@@ -466,6 +474,36 @@
 
                 setRewardState('reward-3', count, 3);
                 setRewardState('reward-10', count, 10, true);
+            });
+
+            // --- Telegram unlock: only after a paid ₦5,000 (live_5000) purchase ---
+            // TODO(backend): replace with your real Telegram invite link.
+            var TELEGRAM_INVITE_LINK = 'https://t.me/+REPLACE_WITH_YOUR_INVITE_LINK';
+            window.ncaClient.onUpdate('purchases:getPaidTiersForEmail', { email: lead.email }, function (paidTiers) {
+                var hasLiveAccess = Array.isArray(paidTiers) && paidTiers.indexOf('live_5000') !== -1;
+                var card = document.getElementById('telegram-card');
+                var overlay = document.getElementById('telegram-lock-overlay');
+                var iconWrap = document.getElementById('telegram-icon-wrap');
+                var title = document.getElementById('telegram-title');
+                var description = document.getElementById('telegram-description');
+                if (!card) return;
+
+                if (hasLiveAccess) {
+                    var wasLocked = card.getAttribute('data-unlocked') !== 'true';
+                    card.href = TELEGRAM_INVITE_LINK;
+                    card.target = '_blank';
+                    card.rel = 'noopener noreferrer';
+                    card.classList.remove('pointer-events-none');
+                    card.classList.add('hover:border-blue-400', 'hover:shadow-md', 'transition-all', 'cursor-pointer', 'group');
+                    if (overlay) overlay.remove();
+                    if (iconWrap) { iconWrap.classList.remove('opacity-40'); iconWrap.classList.add('group-hover:scale-110', 'transition-transform'); }
+                    if (title) title.classList.remove('opacity-40');
+                    if (description) description.classList.remove('opacity-40');
+                    if (wasLocked) {
+                        card.setAttribute('data-unlocked', 'true');
+                        window.ncaConfetti(card);
+                    }
+                }
             });
 
             // --- Recent referrals list -------------------------------------

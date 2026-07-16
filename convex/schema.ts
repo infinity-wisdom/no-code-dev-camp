@@ -11,8 +11,15 @@ export default defineSchema({
     // Email of the person who referred this lead, if they arrived via a
     // referral link (index.html?ref=<email>). Undefined for organic signups.
     referredByEmail: v.optional(v.string()),
+    // Salted SHA-256 hash of the IP address seen at signup — never the raw
+    // IP. Used only as a best-effort, no-login "welcome back" signal for
+    // returning visitors on a new browser/device where localStorage is
+    // empty. See convex/http.ts for how this is set and matched.
+    ipHash: v.optional(v.string()),
     createdAt: v.number(),
-  }).index("by_email", ["email"]),
+  })
+    .index("by_email", ["email"])
+    .index("by_ipHash", ["ipHash"]),
 
   // One row per offer a lead has clicked into (main-offer, budget-offer, or
   // the live upsell). Created as "pending" from the client via purchases:create,
