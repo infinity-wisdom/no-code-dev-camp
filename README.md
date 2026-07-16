@@ -11,7 +11,7 @@ Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](htt
 | Squeeze page | `index.html` | Hero + roadmap, founder story, "who it's for," FAQ, countdown, and lead-capture form |
 | Main offer (₦3,500) | `main-offer.html` | Video recordings + ebook; downsell link to the budget offer |
 | Budget offer (₦2,500) | `budget-offer.html` | Recordings-only; the ₦5,000 live-offer button and the "not ready to pay" link both skip straight to the dashboard, no checkout on this page |
-| Dashboard | `dashboard.html` | Home base for every signed-up lead, paid or not — countdown, community links, live referral tracker & leaderboard, and the ₦5,000 "Unlock Live Access" checkout |
+| Dashboard | `dashboard.html` | Home base for every signed-up lead, paid or not — dynamic greeting, live countdown, community links, avatar creator, live referral tracker & leaderboard, and the ₦5,000 "Unlock Live Access" checkout |
 
 Every lead who signs up reaches the dashboard, whether or not they've paid for anything — main-offer.html and budget-offer.html both have a "not ready to pay yet? Go to your dashboard" link for exactly that. Payment for any tier (including the ₦5,000 live upgrade) can happen from the dashboard itself via the "Unlock Live Access" button, not just from the offer pages. The **Telegram community card** on the dashboard is the one thing actually gated: it stays locked until `purchases:getPaidTiersForEmail` shows a paid `live_5000` purchase for that lead — WhatsApp, the referral tracker, and the reward unlocks are all available to everyone regardless of payment.
 
@@ -20,6 +20,14 @@ index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
                     ↓  (downsell)         ↑ (all paths, paid or not, lead here)
               budget-offer.html ─────────┘
 ```
+
+## Dashboard Details
+
+- **Greeting** — `dashboard.html` pulls the lead's first name from `localStorage` (`window.nca.getLead()`) and sets "Welcome back, [First Name]!"; guests with no stored lead see a generic "Welcome back!" instead.
+- **Countdown** — now a real live countdown to Aug 24, 2026 (same target date as the one on `index.html`), not just a decorative pulse animation.
+- **Hero background** — an original abstract pattern (dot grid + gradient blobs + floating code glyphs), built from scratch rather than a stock photo — embedding a photo we don't hold the rights to into a production site would be a copyright risk. Swap the background `<div>` block in the hero section for a real photo later if you have a licensed one.
+- **₦5,000 CTA** — bigger, with a pulsing glow ring (`.nca-glow-ring` in `animations.css`) and a "🔥 Most Popular Upgrade" badge above it, to make it the clear visual focal point of the hero.
+- **Avatar creator** — a new section lets a lead upload a photo and get a branded, circular "NoCode Developers Camp" frame (via `<canvas>`), then download it as a PNG for social sharing. This is entirely client-side (`assets/js/avatar-creator.js`) — the photo is read with `FileReader` and drawn straight to canvas; it's never uploaded to Convex or anywhere else, since there's no reason a feature like this needs a backend at all.
 
 ## Motion & Micro-interactions
 

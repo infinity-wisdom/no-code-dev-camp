@@ -60,7 +60,23 @@
   100% { transform: translate(var(--dx, 0px), -120px) rotate(360deg); opacity: 0; }
 }
 
-/* Shared modal open/close feel (checkout modal etc.) */
+/* High-attention glow ring, used for the ₦5,000 unlock CTA */
+.nca-glow-ring {
+  position: relative;
+}
+.nca-glow-ring::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.55);
+  z-index: -1;
+  animation: nca-glow-ring-kf 2s ease-out infinite;
+}
+@keyframes nca-glow-ring-kf {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
 .nca-modal-panel {
   transition: transform 0.25s ease, opacity 0.25s ease;
 }

@@ -11,6 +11,7 @@
 <script src="./assets/js/animations.js"></script>
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="./assets/js/checkout-modal.js"></script>
+<script src="./assets/js/avatar-creator.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -178,11 +179,21 @@
 <body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-white">
 <!-- Section 4.1: Hero Dashboard -->
 <section class="bg-[#1A56DB] relative overflow-hidden text-white pt-24 pb-32 px-gutter" data-animate="pop">
-<!-- Abstract geometric background overlay for premium feel -->
-<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0%, transparent 50%);"></div>
+<!-- Original abstract background: dot grid + gradient blobs + floating code glyphs.
+     (Deliberately not a stock photo — embedding a photo we don't hold rights to
+     into a production site would be a copyright risk. This is built from scratch.) -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden">
+<div class="absolute inset-0 opacity-[0.15]" style="background-image: radial-gradient(rgba(255,255,255,0.6) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+<div class="absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-20 blur-3xl" style="background: radial-gradient(circle, #38BDF8 0%, transparent 70%);"></div>
+<div class="absolute -bottom-32 -right-16 w-[28rem] h-[28rem] rounded-full opacity-20 blur-3xl" style="background: radial-gradient(circle, #ffffff 0%, transparent 70%);"></div>
+<span class="nca-float absolute top-[15%] left-[8%] text-white/10 text-6xl font-mono select-none hidden md:block" style="animation-delay: 0.3s;">&lt;/&gt;</span>
+<span class="nca-float absolute top-[65%] left-[14%] text-white/10 text-4xl font-mono select-none hidden md:block" style="animation-delay: 1.1s;">{ }</span>
+<span class="nca-float absolute top-[20%] right-[10%] text-white/10 text-5xl font-mono select-none hidden md:block" style="animation-delay: 0.7s;">( )</span>
+<span class="nca-float absolute top-[70%] right-[16%] text-white/10 text-3xl font-mono select-none hidden md:block" style="animation-delay: 1.6s;">#</span>
+</div>
 <div class="max-w-container-max mx-auto relative z-10 text-center flex flex-col items-center">
-<h1 class="font-headline-xl text-headline-xl md:text-[64px] md:leading-[1.1] md:tracking-[-0.02em] font-extrabold mb-4 animate-fade-in-up">
-                Welcome back, Alex!
+<h1 class="font-headline-xl text-headline-xl md:text-[64px] md:leading-[1.1] md:tracking-[-0.02em] font-extrabold mb-4 animate-fade-in-up" id="dashboard-greeting">
+                Welcome back!
             </h1>
 <p class="font-body-md text-body-md text-blue-100 mb-12 max-w-2xl opacity-90">
                 Your No-Code E-Commerce Bootcamp begins soon. Secure your spot to unlock full access to the live sessions and community channels.
@@ -210,11 +221,16 @@
 </div>
 <!-- Conditional Unlock Button -->
 <!-- TODO(backend): a real payment gateway checkout should open here; the Convex mutation below just records purchase intent -->
-<button class="bg-white text-[#1A56DB] font-label-bold text-label-bold px-8 py-4 rounded-lg shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-2 group" data-bounce="" id="unlock-live-btn">
-<span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
-                Pay ₦5,000 to Unlock Live Access 🔓
-                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+<div class="flex flex-col items-center gap-3">
+<span class="bg-[#FCD34D] text-[#78350F] font-label-bold text-label-bold px-4 py-1.5 rounded-full uppercase tracking-wider text-xs shadow-md nca-pulse">
+                    🔥 Most Popular Upgrade
+                </span>
+<button class="nca-glow-ring bg-white text-[#1A56DB] font-label-bold text-label-bold px-10 py-5 md:px-12 md:py-6 rounded-xl shadow-2xl hover:bg-gray-50 transition-all transform hover:-translate-y-1 hover:scale-105 active:translate-y-0 flex items-center gap-3 group text-lg md:text-xl" data-bounce="" id="unlock-live-btn">
+<span class="material-symbols-outlined text-2xl" data-icon="lock_open">lock_open</span>
+                    Pay ₦5,000 to Unlock Live Access 🔓
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform text-2xl" data-icon="arrow_forward">arrow_forward</span>
 </button>
+</div>
 </div>
 </section>
 <!-- Section 4.2: Community Access -->
@@ -278,6 +294,41 @@
 <a class="w-14 h-14 bg-white rounded-full flex items-center justify-center premium-shadow hover:scale-110 transition-transform group border border-[#1A56DB]/10" href="#">
 <span class="material-symbols-outlined text-[#1A56DB] group-hover:text-primary transition-colors" data-icon="work">work</span> <!-- LinkedIn Proxy -->
 </a>
+</div>
+</div>
+</section>
+<!-- Section 4.35: Avatar Creator -->
+<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter" data-animate="">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-12">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">🖼️ Create Your Bootcamp Avatar</h2>
+<p class="font-body-md text-body-md text-outline max-w-xl mx-auto">Upload a photo, get a branded NoCode Developers Camp frame, and download it to flex on social media. Your photo stays on your device — nothing is uploaded anywhere.</p>
+</div>
+<div class="flex flex-col md:flex-row gap-10 items-center justify-center max-w-4xl mx-auto">
+<!-- Upload + Controls -->
+<div class="w-full md:w-2/5 space-y-6">
+<div class="bg-[#F8FAFC] border-2 border-dashed border-[#CBD5E1] rounded-2xl p-8 text-center hover:border-primary-container transition-colors cursor-pointer" id="avatar-drop-zone">
+<span aria-hidden="true" class="material-symbols-outlined text-primary-container text-4xl mb-3" data-icon="add_a_photo">add_a_photo</span>
+<p class="font-label-bold text-label-bold text-on-surface mb-1">Click or drag a photo here</p>
+<p class="font-body-sm text-body-sm text-outline">PNG or JPG, any size</p>
+<input accept="image/*" class="hidden" id="avatar-file-input" type="file"/>
+</div>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface mb-3 text-sm">Frame Color</p>
+<div class="flex gap-3">
+<button aria-label="Blue frame" class="w-12 h-12 rounded-full ring-2 ring-primary-container ring-offset-2" data-avatar-theme="blue" style="background: linear-gradient(135deg, #1A56DB, #38BDF8);" type="button"></button>
+<button aria-label="Navy frame" class="w-12 h-12 rounded-full" data-avatar-theme="navy" style="background: linear-gradient(135deg, #0B1C30, #1A56DB);" type="button"></button>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary font-label-bold text-label-bold py-4 rounded-lg hover:bg-primary transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0" data-bounce="" disabled="" id="avatar-download-btn" type="button">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="download">download</span>
+                        Download My Avatar 📥
+                    </button>
+</div>
+<!-- Canvas Preview -->
+<div class="w-full md:w-3/5 flex justify-center">
+<canvas class="rounded-2xl shadow-xl w-full max-w-[380px] h-auto" height="600" id="avatar-canvas" width="600"></canvas>
+</div>
 </div>
 </div>
 </section>
@@ -427,20 +478,36 @@
 <a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors underline" href="#">Contact Support</a>
 </nav>
 </footer>
-<!-- Simple script for countdown animation visual effect -->
+<!-- Live countdown to the training start date: August 24, 2026 (00:00 local time) -->
 <script>
-        // Decorative pulse effect for the countdown
-        setInterval(() => {
-            const secs = document.getElementById('mins');
-            if(secs) {
-                let current = parseInt(secs.innerText);
-                if(current > 0) {
-                    // Just for visual effect in the static mockup
-                    secs.style.opacity = '0.5';
-                    setTimeout(() => { secs.style.opacity = '1'; }, 150);
+        (function () {
+            var target = new Date('2026-08-24T00:00:00');
+            var daysEl = document.getElementById('days');
+            var hoursEl = document.getElementById('hours');
+            var minsEl = document.getElementById('mins');
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+
+            function tick() {
+                var diff = target - new Date();
+                if (diff <= 0) {
+                    if (daysEl) daysEl.textContent = '00';
+                    if (hoursEl) hoursEl.textContent = '00';
+                    if (minsEl) minsEl.textContent = '00';
+                    clearInterval(timer);
+                    return;
                 }
+                var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                var mins = Math.floor((diff / (1000 * 60)) % 60);
+                if (daysEl) daysEl.textContent = pad(days);
+                if (hoursEl) hoursEl.textContent = pad(hours);
+                if (minsEl) minsEl.textContent = pad(mins);
             }
-        }, 60000);
+
+            tick();
+            var timer = setInterval(tick, 1000);
+        })();
 
         const copyBtn = document.getElementById('copy-referral-link');
         const referralInput = document.getElementById('referral-link');
@@ -461,6 +528,11 @@
         // Guests who land here without going through the squeeze page get a
         // static, empty-state dashboard rather than a broken one.
         if (lead && lead.email) {
+            var greetingEl = document.getElementById('dashboard-greeting');
+            if (greetingEl && lead.firstName) {
+                greetingEl.textContent = 'Welcome back, ' + lead.firstName + '!';
+            }
+
             if (referralInput) {
                 referralInput.value = window.nca.buildReferralLink(lead.email);
             }
