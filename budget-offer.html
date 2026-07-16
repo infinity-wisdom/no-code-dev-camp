@@ -6,7 +6,11 @@
 <title>Budget Offer - Just Recordings</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<link href="./assets/css/animations.css" rel="stylesheet"/>
 <script src="./assets/js/convex-client.js"></script>
+<script src="./assets/js/animations.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script src="./assets/js/checkout-modal.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -123,16 +127,16 @@
 <main class="flex-grow w-full flex flex-col items-center justify-center px-gutter py-section-padding-mobile md:py-section-padding-desktop">
 <div class="max-w-[600px] w-full mx-auto text-center space-y-12">
 <!-- Minimalist Header -->
-<div class="space-y-4">
+<div class="space-y-4" data-animate="fade-left">
 <h1 class="font-headline-lg-mobile md:font-headline-xl text-headline-lg-mobile md:text-headline-xl text-on-surface">
-                    Just the Raw MP4 Files
+                    📼 Just the Raw MP4 Files
                 </h1>
 <p class="font-body-md text-body-md text-on-surface-variant">
                     Access to the core recordings only. ₦2,500
                 </p>
 </div>
 <!-- Upsell Bump Box -->
-<div class="bg-brand-blue-light border-2 border-brand-blue-secondary rounded-xl p-8 relative soft-shadow">
+<div class="bg-brand-blue-light border-2 border-brand-blue-secondary rounded-xl p-8 relative soft-shadow" data-animate="pop" data-delay="1">
 <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-brand-blue-light border border-brand-blue-secondary text-brand-blue-secondary font-label-bold text-label-bold px-3 py-1 rounded-full uppercase tracking-wider">
                     🔥 Upgrade Alert
                 </div>
@@ -140,12 +144,12 @@
                     For just <strong>₦2,500 extra</strong> (Total ₦5,000), get LIVE daily sessions, Telegram community access, and the referral tracker dashboard to unlock exclusive guidebooks.
                 </p>
 <!-- TODO(backend): a real payment gateway checkout for the ₦5,000 tier should open here; the Convex mutation below just records purchase intent -->
-<a class="w-full bg-primary-container text-on-primary py-4 px-6 rounded-lg font-label-bold text-[18px] hover:bg-primary transition-colors focus:outline-none focus:ring-4 focus:ring-primary-container/30 flex items-center justify-center" href="dashboard.html" id="buy-live-offer">
-                    See the ₦5,000 Live Offer
+<a class="w-full bg-primary-container text-on-primary py-4 px-6 rounded-lg font-label-bold text-[18px] hover:bg-primary transition-colors focus:outline-none focus:ring-4 focus:ring-primary-container/30 flex items-center justify-center" data-bounce="" href="dashboard.html" id="buy-live-offer">
+                    See the ₦5,000 Live Offer ✨
                 </a>
 </div>
 <!-- Secondary Action -->
-<div class="pt-4">
+<div class="pt-4" data-animate="" data-delay="2">
 <!-- TODO(backend): a real payment gateway checkout for the ₦2,500 tier should open here; the Convex mutation below just records purchase intent -->
 <a class="text-primary-container font-body-md text-body-md underline hover:text-primary transition-colors bg-transparent border-0" href="dashboard.html" id="buy-budget-offer">
                     Just give me the videos for ₦2,500
@@ -170,22 +174,19 @@
 </div>
 </footer>
 <script>
-    function recordPurchaseAndGo(tier, targetHref) {
-        return async function (e) {
+    function openCheckout(tier) {
+        return function (e) {
             e.preventDefault();
             var lead = window.nca.getLead();
-            if (lead && lead.email) {
-                try {
-                    await window.ncaClient.mutation('purchases:create', { leadEmail: lead.email, tier: tier });
-                } catch (err) {
-                    console.error('Failed to record purchase in Convex:', err);
-                }
+            if (!lead || !lead.email) {
+                window.location.href = 'index.html';
+                return;
             }
-            window.location.href = targetHref;
+            window.ncaOpenCheckout(tier, lead, 'dashboard.html');
         };
     }
 
-    document.getElementById('buy-live-offer').addEventListener('click', recordPurchaseAndGo('live_5000', 'dashboard.html'));
-    document.getElementById('buy-budget-offer').addEventListener('click', recordPurchaseAndGo('budget_2500', 'dashboard.html'));
+    document.getElementById('buy-live-offer').addEventListener('click', openCheckout('live_5000'));
+    document.getElementById('buy-budget-offer').addEventListener('click', openCheckout('budget_2500'));
 </script>
 </body></html>

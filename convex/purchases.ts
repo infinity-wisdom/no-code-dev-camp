@@ -1,13 +1,12 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
+import { CURRENCY, TIER_PRICING } from "./pricing";
 
 /**
- * Record intent to buy a tier as "pending". Called from main-offer.html,
- * budget-offer.html, and the live-access button on dashboard.html.
- *
- * TODO(backend): a real payment gateway (Paystack/Flutterwave) checkout
- * should be opened alongside this call, and its webhook should call
- * `purchases.markPaid` (via convex/http.ts) once payment is confirmed.
+ * Record purchase intent as "pending" and hand back everything the client
+ * needs to open the Flutterwave checkout modal — including a server-generated
+ * txRef and the canonical price for this tier. The client never gets to
+ * dictate the amount; that's looked up from TIER_PRICING here.
  */
 export const create = mutation({
   args: {
@@ -19,23 +18,65 @@ export const create = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("purchases", {
-      leadEmail: args.leadEmail.trim().toLowerCase(),
+    const leadEmail = args.leadEmail.trim().toLowerCase();
+    const amount = TIER_PRICING[args.tier];
+    const txRef = `nca_${args.tier}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+    const purchaseId = await ctx.db.insert("purchases", {
+      leadEmail,
       tier: args.tier,
       status: "pending",
+      amount,
+      currency: CURRENCY,
+      txRef,
       createdAt: Date.now(),
     });
+
+    return { purchaseId, txRef, amount, currency: CURRENCY };
   },
 });
 
-export const markPaid = mutation({
+/** Internal — only callable from other Convex functions (actions/http actions), never directly from the browser. */
+export const getById = internalQuery({
+  args: { purchaseId: v.id("purchases") },
+  handler: async (ctx, args) => ctx.db.get(args.purchaseId),
+});
+
+export const getByTxRef = internalQuery({
+  args: { txRef: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("purchases")
+      .withIndex("by_txRef", (q) => q.eq("txRef", args.txRef))
+      .unique();
+  },
+});
+
+/**
+ * Internal — flips a purchase to "paid". Only ever called after
+ * convex/payments.ts has verified the transaction directly against
+ * Flutterwave's API. There is deliberately no public mutation that can mark
+ * a purchase paid — that decision must never be trusted from the browser.
+ */
+export const markPaidById = internalMutation({
+  args: { purchaseId: v.id("purchases"), flwTransactionId: v.string() },
+  handler: async (ctx, args) => {
+    const purchase = await ctx.db.get(args.purchaseId);
+    if (!purchase || purchase.status === "paid") return; // idempotent
+    await ctx.db.patch(args.purchaseId, { status: "paid", flwTransactionId: args.flwTransactionId });
+  },
+});
+
+export const markFailedById = internalMutation({
   args: { purchaseId: v.id("purchases") },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.purchaseId, { status: "paid" });
+    const purchase = await ctx.db.get(args.purchaseId);
+    if (!purchase || purchase.status === "paid") return;
+    await ctx.db.patch(args.purchaseId, { status: "failed" });
   },
 });
 
-export const getByEmail = query({
+export const getByEmail = internalQuery({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db

@@ -1,0 +1,66 @@
+/* Scroll-reveal: elements start hidden/offset, then settle into place */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+[data-animate].nca-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-animate="fade-left"] { transform: translateX(-24px); }
+[data-animate="fade-left"].nca-visible { transform: translateX(0); }
+[data-animate="fade-right"] { transform: translateX(24px); }
+[data-animate="fade-right"].nca-visible { transform: translateX(0); }
+[data-animate="pop"] { transform: scale(0.92); }
+[data-animate="pop"].nca-visible { transform: scale(1); }
+
+/* Stagger helpers for grids/lists — apply alongside [data-animate] */
+[data-animate][data-delay="1"] { transition-delay: 0.08s; }
+[data-animate][data-delay="2"] { transition-delay: 0.16s; }
+[data-animate][data-delay="3"] { transition-delay: 0.24s; }
+[data-animate][data-delay="4"] { transition-delay: 0.32s; }
+[data-animate][data-delay="5"] { transition-delay: 0.4s; }
+[data-animate][data-delay="6"] { transition-delay: 0.48s; }
+[data-animate][data-delay="7"] { transition-delay: 0.56s; }
+
+/* Button/element press pop */
+.nca-pop { animation: nca-pop-kf 0.4s ease; }
+@keyframes nca-pop-kf {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.94); }
+  70% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Gentle continuous float, used on hero/decorative emoji */
+.nca-float { animation: nca-float-kf 3.2s ease-in-out infinite; display: inline-block; }
+@keyframes nca-float-kf {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(-4deg); }
+}
+
+/* Soft pulse, used on countdown numbers and urgency badges */
+.nca-pulse { animation: nca-pulse-kf 2.2s ease-in-out infinite; }
+@keyframes nca-pulse-kf {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Emoji confetti burst pieces, spawned by ncaConfetti() in animations.js */
+.nca-confetti-piece {
+  position: absolute;
+  font-size: 22px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: nca-confetti-kf var(--dur, 1200ms) ease-out forwards;
+}
+@keyframes nca-confetti-kf {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), -120px) rotate(360deg); opacity: 0; }
+}
+
+/* Shared modal open/close feel (checkout modal etc.) */
+.nca-modal-panel {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}

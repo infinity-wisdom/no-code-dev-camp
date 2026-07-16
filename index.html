@@ -6,7 +6,9 @@
 <title>NoCode Academy - 7-Day Bootcamp Squeeze Page</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<link href="./assets/css/animations.css" rel="stylesheet"/>
 <script src="./assets/js/convex-client.js"></script>
+<script src="./assets/js/animations.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -119,12 +121,13 @@
 <!-- Main Content -->
 <main class="flex-grow w-full max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24">
 <!-- Left Side: Value Proposition (60%) -->
-<section class="w-full md:w-3/5 space-y-8">
+<section class="w-full md:w-3/5 space-y-8" data-animate="fade-left">
 <div class="space-y-4">
 <span class="inline-block bg-[#F0F9FF] text-[#38BDF8] px-3 py-1 rounded-full font-label-bold text-label-bold uppercase tracking-wider">
-                    Exclusive 7-Day Bootcamp
+                    🚀 Exclusive 7-Day Bootcamp
                 </span>
 <h1 class="font-headline-xl text-headline-xl font-extrabold text-on-surface leading-tight">
+<span class="nca-float inline-block mr-1">🛠️</span>
 <span class="text-primary-container">Build & Launch Real Websites and Apps with AI</span> in 7 Days – Zero Coding Experience Needed!
                 </h1>
 <p class="font-body-md text-body-md text-on-surface-variant text-lg md:text-xl max-w-2xl">
@@ -132,54 +135,54 @@
                 </p>
 </div>
 <div class="bg-surface rounded-2xl p-6 md:p-8 border border-[#E2E8F0] card-shadow">
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6">Your 7-Day Roadmap to Launch:</h2>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6">🗺️ Your 7-Day Roadmap to Launch:</h2>
 <ul class="space-y-4">
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 1: The Blueprint & Pixel-Perfect UI/UX</strong>
+<strong class="text-on-surface block mb-1">🎨 Day 1: The Blueprint & Pixel-Perfect UI/UX</strong>
 <span class="text-on-surface-variant text-sm">Design high-fidelity wireframes for a full funnel using Google Stitch and mobile-first principles.</span>
 </div>
 </li>
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 2: Bringing Designs to Life with AI</strong>
+<strong class="text-on-surface block mb-1">🤖 Day 2: Bringing Designs to Life with AI</strong>
 <span class="text-on-surface-variant text-sm">Turn your designs into production-ready HTML/CSS by prompting Claude AI — zero code written by hand.</span>
 </div>
 </li>
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 3: The Engine Room – Backend & Auth</strong>
+<strong class="text-on-surface block mb-1">🗄️ Day 3: The Engine Room – Backend & Auth</strong>
 <span class="text-on-surface-variant text-sm">Set up a real database and user authentication with Supabase, no SQL required.</span>
 </div>
 </li>
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 4: Automating Payments & API Integrations</strong>
+<strong class="text-on-surface block mb-1">💳 Day 4: Automating Payments & API Integrations</strong>
 <span class="text-on-surface-variant text-sm">Connect Paystack/Flutterwave checkout and automated emails using webhooks.</span>
 </div>
 </li>
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 5: Hosting & Deployment – Going Live</strong>
+<strong class="text-on-surface block mb-1">🚢 Day 5: Hosting & Deployment – Going Live</strong>
 <span class="text-on-surface-variant text-sm">Push your project to GitHub and deploy it live with GitHub Pages or Vercel.</span>
 </div>
 </li>
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 6: The Gamification Engine</strong>
+<strong class="text-on-surface block mb-1">🏆 Day 6: The Gamification Engine</strong>
 <span class="text-on-surface-variant text-sm">Build a milestone-based referral tracker and real-time leaderboard, no login required.</span>
 </div>
 </li>
 <li class="flex items-start gap-4">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container shrink-0 mt-1" data-icon="check_circle">check_circle</span>
 <div>
-<strong class="text-on-surface block mb-1">Day 7: Final Polish, Automation & Launch</strong>
+<strong class="text-on-surface block mb-1">🏁 Day 7: Final Polish, Automation & Launch</strong>
 <span class="text-on-surface-variant text-sm">Automate your emails, add anti-fraud checks, and deploy your fully functional funnel to the world.</span>
 </div>
 </li>
@@ -187,7 +190,7 @@
 </div>
 </section>
 <!-- Right Side: Opt-in Form (40%) -->
-<section class="w-full md:w-2/5" id="signup">
+<section class="w-full md:w-2/5" data-animate="fade-right" id="signup">
 <div class="bg-surface-container-lowest rounded-[16px] p-8 md:p-10 border border-[#38BDF8] card-shadow relative overflow-hidden">
 <!-- Decorative top bar -->
 <div class="absolute top-0 left-0 w-full h-1 bg-[#38BDF8]"></div>
@@ -255,8 +258,8 @@
 <input class="w-full bg-[#F8FAFC] border-[#E2E8F0] rounded-lg pl-11 pr-4 py-3 text-[16px] text-on-surface placeholder:text-outline-variant focus:ring-0 focus:outline-none transition-colors duration-200 border" id="phone" name="phone" placeholder="(555) 123-4567" required="" type="tel"/>
 </div>
 </div>
-<button class="w-full bg-primary-container text-on-primary rounded-lg py-4 px-6 text-[18px] font-bold tracking-wide hover:bg-surface-tint transition-all duration-200 shadow-[0_4px_14px_0_rgba(26,86,219,0.39)] hover:shadow-[0_6px_20px_rgba(26,86,219,0.23)] hover:-translate-y-[1px] flex items-center justify-center gap-2 group mt-6" type="submit">
-                        Claim My Training Package
+<button class="w-full bg-primary-container text-on-primary rounded-lg py-4 px-6 text-[18px] font-bold tracking-wide hover:bg-surface-tint transition-all duration-200 shadow-[0_4px_14px_0_rgba(26,86,219,0.39)] hover:shadow-[0_6px_20px_rgba(26,86,219,0.23)] hover:-translate-y-[1px] flex items-center justify-center gap-2 group mt-6" data-bounce="" type="submit">
+                        🚀 Claim My Training Package
                         <span aria-hidden="true" class="material-symbols-outlined transition-transform duration-200 group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
 </button>
 <p class="text-center text-xs text-outline mt-4">
@@ -274,9 +277,9 @@
 <section class="w-full bg-[#0B1C30] relative overflow-hidden">
 <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at bottom left, rgba(56,189,248,0.15) 0%, transparent 55%);"></div>
 <div class="max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop relative z-10">
-<div class="max-w-3xl mx-auto text-center space-y-6">
+<div class="max-w-3xl mx-auto text-center space-y-6" data-animate="pop">
 <span class="inline-block bg-white/10 text-[#7bd0ff] px-3 py-1 rounded-full font-label-bold text-label-bold uppercase tracking-wider">
-                    Why I Built This
+                    💡 Why I Built This
                 </span>
 <p class="font-body-md text-body-md text-white text-lg md:text-xl leading-relaxed text-left md:text-center">
                     I started out the same way most of you are starting: curious, broke, and convinced that "tech" was something other people got to do. What changed everything for me wasn't a degree — it was realizing that a website or an app is just an idea with a door on it, and AI just handed all of us the keys.
@@ -288,8 +291,8 @@
                     A website isn't a luxury anymore — it's your storefront, your CV, your proof of work, and often the first impression you get to make. In 7 days, I want to hand you the exact process I use to go from a blank page to a live, working product. Not theory. Not "someday." A real, deployed link you can send to anyone by next week.
                 </p>
 <div class="pt-4">
-<a class="inline-flex items-center gap-2 bg-white text-[#0B1C30] font-label-bold text-label-bold px-8 py-4 rounded-lg hover:bg-[#F0F9FF] transition-all transform hover:-translate-y-1 shadow-lg" href="#signup">
-                        Join the 7-Day Bootcamp
+<a class="inline-flex items-center gap-2 bg-white text-[#0B1C30] font-label-bold text-label-bold px-8 py-4 rounded-lg hover:bg-[#F0F9FF] transition-all transform hover:-translate-y-1 shadow-lg" data-bounce="" href="#signup">
+                        Join the 7-Day Bootcamp 🚀
                         <span aria-hidden="true" class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
 </a>
 </div>
@@ -300,23 +303,23 @@
 <section class="w-full bg-surface-container-lowest border-t border-b border-[#E2E8F0]">
 <div class="max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop">
 <div class="text-center max-w-2xl mx-auto mb-12">
-<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">Who This Bootcamp Is For</h2>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">🎯 Who This Bootcamp Is For</h2>
 <p class="font-body-md text-body-md text-on-surface-variant">You don't need a tech background. You need a reason to build.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="bg-surface rounded-2xl p-6 border border-[#E2E8F0] card-shadow text-center">
+<div class="bg-surface rounded-2xl p-6 border border-[#E2E8F0] card-shadow text-center hover:-translate-y-1 transition-transform duration-300" data-animate="pop" data-delay="1">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container text-4xl mb-4" data-icon="storefront">storefront</span>
-<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-xl">Young Entrepreneurs</h3>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-xl">🧑‍💼 Young Entrepreneurs</h3>
 <p class="font-body-sm text-body-sm text-on-surface-variant">Turn your business idea into a live website or app that takes orders and builds trust from day one.</p>
 </div>
-<div class="bg-surface rounded-2xl p-6 border border-[#E2E8F0] card-shadow text-center">
+<div class="bg-surface rounded-2xl p-6 border border-[#E2E8F0] card-shadow text-center hover:-translate-y-1 transition-transform duration-300" data-animate="pop" data-delay="2">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container text-4xl mb-4" data-icon="psychology">psychology</span>
-<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-xl">Career Switchers</h3>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-xl">🔄 Career Switchers</h3>
 <p class="font-body-sm text-body-sm text-on-surface-variant">Add a real, deployed portfolio project to your CV using AI-assisted development — no CS degree required.</p>
 </div>
-<div class="bg-surface rounded-2xl p-6 border border-[#E2E8F0] card-shadow text-center">
+<div class="bg-surface rounded-2xl p-6 border border-[#E2E8F0] card-shadow text-center hover:-translate-y-1 transition-transform duration-300" data-animate="pop" data-delay="3">
 <span aria-hidden="true" class="material-symbols-outlined text-primary-container text-4xl mb-4" data-icon="bolt">bolt</span>
-<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-xl">Builders in a Hurry</h3>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 text-xl">⚡ Builders in a Hurry</h3>
 <p class="font-body-sm text-body-sm text-on-surface-variant">Already have an idea? Learn to go from Figma/Stitch design to a deployed, working product in 7 days flat.</p>
 </div>
 </div>
@@ -326,25 +329,25 @@
 <section class="w-full bg-[#F0F9FF]">
 <div class="max-w-container-max mx-auto px-gutter py-section-padding-mobile md:py-section-padding-desktop">
 <div class="max-w-3xl mx-auto">
-<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8 text-center">Frequently Asked Questions</h2>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8 text-center">❓ Frequently Asked Questions</h2>
 <div class="space-y-4">
-<details class="bg-surface rounded-xl border border-[#E2E8F0] p-6 card-shadow group">
+<details class="bg-surface rounded-xl border border-[#E2E8F0] p-6 card-shadow group" data-animate="" data-delay="1">
 <summary class="font-label-bold text-label-bold text-on-surface cursor-pointer list-none flex items-center justify-between">
-                            Do I need any coding experience?
+                            💻 Do I need any coding experience?
                             <span aria-hidden="true" class="material-symbols-outlined text-primary-container group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
 </summary>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-3">No. Every step is designed around AI tools like Google Stitch and Claude doing the heavy lifting — you learn to direct the build, not memorize syntax.</p>
 </details>
-<details class="bg-surface rounded-xl border border-[#E2E8F0] p-6 card-shadow group">
+<details class="bg-surface rounded-xl border border-[#E2E8F0] p-6 card-shadow group" data-animate="" data-delay="2">
 <summary class="font-label-bold text-label-bold text-on-surface cursor-pointer list-none flex items-center justify-between">
-                            Will I actually deploy something live?
+                            🌐 Will I actually deploy something live?
                             <span aria-hidden="true" class="material-symbols-outlined text-primary-container group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
 </summary>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-3">Yes. By Day 5 your project is live on the internet via GitHub Pages or Vercel, and by Day 7 it's a fully functional, deployed funnel with payments and email automation.</p>
 </details>
-<details class="bg-surface rounded-xl border border-[#E2E8F0] p-6 card-shadow group">
+<details class="bg-surface rounded-xl border border-[#E2E8F0] p-6 card-shadow group" data-animate="" data-delay="3">
 <summary class="font-label-bold text-label-bold text-on-surface cursor-pointer list-none flex items-center justify-between">
-                            How much time do I need each day?
+                            ⏰ How much time do I need each day?
                             <span aria-hidden="true" class="material-symbols-outlined text-primary-container group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
 </summary>
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-3">Plan for 1–2 focused hours a day. Each session builds directly on the last, so consistency matters more than marathon sessions.</p>
@@ -432,7 +435,11 @@
             // Remember who this is locally so the offer/dashboard pages can
             // attach purchases and referrals to the right lead without a login.
             window.nca.setLead(lead);
-            window.location.href = 'main-offer.html';
+            window.ncaConfetti(submitBtn);
+            submitBtn.innerHTML = "You're in! 🎉";
+            setTimeout(function () {
+                window.location.href = 'main-offer.html';
+            }, 500);
         } catch (err) {
             console.error('Failed to save lead to Convex:', err);
             submitBtn.disabled = false;

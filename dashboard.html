@@ -6,7 +6,11 @@
 <title>Premium Dashboard - NoCode Academy</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<link href="./assets/css/animations.css" rel="stylesheet"/>
 <script src="./assets/js/convex-client.js"></script>
+<script src="./assets/js/animations.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script src="./assets/js/checkout-modal.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -173,7 +177,7 @@
 </head>
 <body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-white">
 <!-- Section 4.1: Hero Dashboard -->
-<section class="bg-[#1A56DB] relative overflow-hidden text-white pt-24 pb-32 px-gutter">
+<section class="bg-[#1A56DB] relative overflow-hidden text-white pt-24 pb-32 px-gutter" data-animate="pop">
 <!-- Abstract geometric background overlay for premium feel -->
 <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0%, transparent 50%);"></div>
 <div class="max-w-container-max mx-auto relative z-10 text-center flex flex-col items-center">
@@ -187,34 +191,34 @@
 <div class="flex gap-4 md:gap-8 justify-center mb-12">
 <div class="flex flex-col items-center">
 <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-8 border border-white/20 min-w-[80px] md:min-w-[120px]">
-<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number" id="days">06</span>
+<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number nca-pulse" id="days">06</span>
 </div>
 <span class="font-label-bold text-label-bold mt-3 text-blue-200 uppercase tracking-widest">Days</span>
 </div>
 <div class="flex flex-col items-center">
 <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-8 border border-white/20 min-w-[80px] md:min-w-[120px]">
-<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number" id="hours">14</span>
+<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number nca-pulse" id="hours">14</span>
 </div>
 <span class="font-label-bold text-label-bold mt-3 text-blue-200 uppercase tracking-widest">Hours</span>
 </div>
 <div class="flex flex-col items-center">
 <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-8 border border-white/20 min-w-[80px] md:min-w-[120px]">
-<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number" id="mins">42</span>
+<span class="font-headline-xl text-headline-xl md:text-[56px] font-extrabold countdown-number nca-pulse" id="mins">42</span>
 </div>
 <span class="font-label-bold text-label-bold mt-3 text-blue-200 uppercase tracking-widest">Mins</span>
 </div>
 </div>
 <!-- Conditional Unlock Button -->
 <!-- TODO(backend): a real payment gateway checkout should open here; the Convex mutation below just records purchase intent -->
-<button class="bg-white text-[#1A56DB] font-label-bold text-label-bold px-8 py-4 rounded-lg shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-2 group" id="unlock-live-btn">
+<button class="bg-white text-[#1A56DB] font-label-bold text-label-bold px-8 py-4 rounded-lg shadow-lg hover:bg-gray-50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center gap-2 group" data-bounce="" id="unlock-live-btn">
 <span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
-                Pay ₦5,000 to Unlock Live Access
+                Pay ₦5,000 to Unlock Live Access 🔓
                 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
 </button>
 </div>
 </section>
 <!-- Section 4.2: Community Access -->
-<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter relative">
+<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter relative" data-animate="">
 <div class="max-w-container-max mx-auto">
 <div class="text-center mb-12">
 <h2 class="font-headline-lg text-headline-lg md:font-headline-lg text-on-surface mb-4">Connect with the Community</h2>
@@ -249,7 +253,7 @@
 </div>
 </section>
 <!-- Section 4.3: Social Follow -->
-<section class="bg-[#F0F9FF] py-16 px-gutter border-y border-[#E2E8F0]/50">
+<section class="bg-[#F0F9FF] py-16 px-gutter border-y border-[#E2E8F0]/50" data-animate="">
 <div class="max-w-container-max mx-auto text-center">
 <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-[#1A56DB] mb-8">
                 Follow &amp; DM us 'READY' for a Bonus Cheat Sheet!
@@ -278,7 +282,7 @@
 </div>
 </section>
 <!-- Section 4.4: Referral System -->
-<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter ambient-depth-bg">
+<section class="bg-white py-section-padding-mobile md:py-section-padding-desktop px-gutter ambient-depth-bg" data-animate="">
 <div class="max-w-container-max mx-auto">
 <div class="grid lg:grid-cols-12 gap-12 items-start">
 <!-- Share Interface (Left Col) -->
@@ -290,7 +294,7 @@
 <!-- Share Link Input -->
 <div class="bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0] flex flex-col sm:flex-row gap-4 items-center">
 <input aria-label="Referral Link" class="w-full bg-transparent border-none font-body-md text-on-surface focus:ring-0 px-2" id="referral-link" readonly="" type="text" value="nocodeacademy.com/?ref=ALEX123"/>
-<button class="w-full sm:w-auto bg-[#1A56DB] text-white font-label-bold text-label-bold px-6 py-3 rounded-lg hover:bg-primary transition-colors flex-shrink-0 flex justify-center items-center gap-2" id="copy-referral-link">
+<button class="w-full sm:w-auto bg-[#1A56DB] text-white font-label-bold text-label-bold px-6 py-3 rounded-lg hover:bg-primary transition-colors flex-shrink-0 flex justify-center items-center gap-2" data-bounce="" id="copy-referral-link">
 <span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
                             Copy Link
                         </button>
@@ -309,7 +313,7 @@
 <!-- Progress -->
 <div class="pt-4 border-t border-[#E2E8F0]">
 <div class="flex justify-between items-end mb-2">
-<span class="font-label-bold text-label-bold text-on-surface">Your Progress</span>
+<span class="font-label-bold text-label-bold text-on-surface">🎯 Your Progress</span>
 <span class="font-body-sm text-body-sm text-primary-container font-semibold" id="progress-label">Invited 0 of 10 friends</span>
 </div>
 <div class="w-full bg-[#E2E8F0] rounded-full h-2 mb-8">
@@ -318,7 +322,7 @@
 </div>
 <!-- Recent Referrals List -->
 <div>
-<h4 class="font-label-bold text-label-bold text-on-surface mb-4">Recent Referrals</h4>
+<h4 class="font-label-bold text-label-bold text-on-surface mb-4">👥 Recent Referrals</h4>
 <ul class="space-y-3" id="recent-referrals-list">
 <li class="flex items-center gap-3 p-3 bg-white border border-[#E2E8F0] rounded-lg opacity-60" id="recent-referrals-empty">
 <span class="font-body-sm text-body-sm text-outline">No referrals yet — share your link to get started!</span>
@@ -328,7 +332,7 @@
 </div>
 <!-- Reward Cards (Right Col) -->
 <div class="lg:col-span-5 bg-[#F8FAFC] p-6 md:p-8 rounded-[16px] border border-[#E2E8F0]">
-<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-6">Unlockable Rewards</h3>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-6">🎁 Unlockable Rewards</h3>
 <div class="space-y-4">
 <!-- Reward 1: unlocks at 3 invites -->
 <div class="bg-white p-5 rounded-xl border border-[#E2E8F0] relative overflow-hidden opacity-75" id="reward-3-card">
@@ -377,7 +381,7 @@
 </div>
 </section>
 <!-- Section 4.5: Leaderboard -->
-<section class="bg-[#F0F9FF] py-section-padding-mobile md:py-section-padding-desktop px-gutter">
+<section class="bg-[#F0F9FF] py-section-padding-mobile md:py-section-padding-desktop px-gutter" data-animate="">
 <div class="max-w-3xl mx-auto">
 <div class="text-center mb-10">
 <h2 class="font-headline-lg text-headline-lg text-on-surface flex items-center justify-center gap-3">
@@ -437,7 +441,7 @@
                 navigator.clipboard.writeText(referralInput.value).then(() => {
                     const label = copyBtn.querySelector('span:last-child') || copyBtn;
                     const original = label.textContent;
-                    label.textContent = ' Copied!';
+                    label.textContent = ' Copied! ✅';
                     setTimeout(() => { label.textContent = original; }, 1500);
                 });
             });
@@ -491,18 +495,8 @@
             // --- Live-access purchase button --------------------------------
             var unlockBtn = document.getElementById('unlock-live-btn');
             if (unlockBtn) {
-                unlockBtn.addEventListener('click', async function () {
-                    var original = unlockBtn.innerHTML;
-                    unlockBtn.disabled = true;
-                    unlockBtn.innerHTML = 'Processing…';
-                    try {
-                        await window.ncaClient.mutation('purchases:create', { leadEmail: lead.email, tier: 'live_5000' });
-                        unlockBtn.innerHTML = 'Payment Pending Confirmation';
-                    } catch (err) {
-                        console.error('Failed to record purchase in Convex:', err);
-                        unlockBtn.disabled = false;
-                        unlockBtn.innerHTML = original;
-                    }
+                unlockBtn.addEventListener('click', function () {
+                    window.ncaOpenCheckout('live_5000', lead, 'dashboard.html');
                 });
             }
         }
@@ -549,11 +543,12 @@
             if (!card) return;
 
             if (unlocked) {
+                var wasAlreadyUnlocked = card.getAttribute('data-unlocked') === 'true';
                 card.classList.remove('opacity-75', 'border-[#E2E8F0]');
                 card.classList.add('border-green-200', 'premium-shadow');
                 badge.classList.remove('bg-gray-200', 'text-gray-600');
                 badge.classList.add('bg-green-500', 'text-white');
-                badge.innerHTML = '<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> Unlocked';
+                badge.innerHTML = '<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> Unlocked 🎉';
                 iconWrap.classList.remove('bg-gray-50');
                 iconWrap.classList.add('bg-green-50');
                 icon.classList.remove('text-gray-400');
@@ -562,6 +557,10 @@
                 if (download) download.classList.remove('hidden');
                 if (remaining) remaining.classList.add('hidden');
                 if (bar) { bar.style.width = '100%'; bar.classList.remove('bg-gray-400'); bar.classList.add('bg-green-500'); }
+                if (!wasAlreadyUnlocked) {
+                    card.setAttribute('data-unlocked', 'true');
+                    window.ncaConfetti(card);
+                }
             } else {
                 if (remaining) remaining.textContent = (threshold - count) + ' more needed';
                 if (bar) bar.style.width = Math.min(100, (count / threshold) * 100) + '%';

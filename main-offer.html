@@ -6,7 +6,11 @@
 <title>NoCode Academy - Main Offer</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/convex@1.17.0/dist/browser.bundle.js"></script>
+<link href="./assets/css/animations.css" rel="stylesheet"/>
 <script src="./assets/js/convex-client.js"></script>
+<script src="./assets/js/animations.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script src="./assets/js/checkout-modal.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 
@@ -163,7 +167,7 @@
 <main class="flex-grow flex items-center justify-center py-section-padding-mobile md:py-section-padding-desktop px-gutter w-full">
 <div class="max-w-[700px] w-full mx-auto flex flex-col items-center">
 <!-- Video Placeholder -->
-<div class="w-full aspect-video rounded-xl bg-surface-variant flex items-center justify-center relative overflow-hidden soft-shadow mb-8 border border-outline-variant">
+<div class="w-full aspect-video rounded-xl bg-surface-variant flex items-center justify-center relative overflow-hidden soft-shadow mb-8 border border-outline-variant" data-animate="fade-left">
 <img class="absolute inset-0 w-full h-full object-cover opacity-60" data-alt="A professional, well-lit video placeholder frame for an e-learning course. The image features a clean, modern desk setup with a sleek laptop, a notebook, and a steaming cup of coffee. The lighting is soft and natural, emphasizing a productive and focused learning environment. The color palette is predominantly light with crisp white surfaces, subtle blue accents matching the brand, and deep blacks for contrast. A subtle, high-end aesthetic is maintained throughout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd4cU50bqXujtjY-05SPQk3rJ8cxXXIAX8N4lVr0LdV0tiPGblFK7xv0ueqD-R62ULkPKTU7GYN_yEUllCNXL2_avZSo_ntvBG3kan0Kqkj7uMfHfHwc_KtNw9VkGZEe6Xe-s2i83tB1dYzNMydA4UNSGxukPpe2Ik2noZVgFypck_ZwqRjKp2wvf1p__vMYPPN_QXyxGCWA9WcD-kP8zEk4TP5HuqJC8a0pqUpqEXuHYDRdDsrvepTR073r78aSi0jpp8gELG0Aw"/>
 <div class="absolute inset-0 bg-primary/10"></div>
 <button class="relative z-10 w-20 h-20 bg-primary-container text-on-primary rounded-full flex items-center justify-center hover:bg-primary transition-colors soft-shadow group">
@@ -171,36 +175,36 @@
 </button>
 </div>
 <!-- Content Area -->
-<div class="bg-surface rounded-[16px] border border-outline-variant p-8 md:p-12 w-full flex flex-col items-center text-center soft-shadow relative z-10">
+<div class="bg-surface rounded-[16px] border border-outline-variant p-8 md:p-12 w-full flex flex-col items-center text-center soft-shadow relative z-10" data-animate="pop">
 <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">
-                    Get Full Recordings + The Ultimate Ebook
+                    🎁 Get Full Recordings + The Ultimate Ebook
                 </h1>
-<div class="font-headline-xl text-headline-xl text-primary-container mb-8 font-extrabold tracking-tight">
+<div class="font-headline-xl text-headline-xl text-primary-container mb-8 font-extrabold tracking-tight nca-pulse">
                     ₦3,500 <span class="font-headline-lg text-headline-lg text-on-surface-variant font-bold align-middle text-2xl">Only</span>
 </div>
 <div class="w-full max-w-md bg-surface-container-low rounded-lg p-6 mb-8 text-left border border-outline-variant soft-shadow">
 <ul class="space-y-4">
 <li class="flex items-start">
 <span class="material-symbols-outlined text-primary-container mr-3 mt-0.5" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span class="font-body-md text-body-md text-on-surface font-semibold">Lifetime Access to all video sessions</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">♾️ Lifetime Access to all video sessions</span>
 </li>
 <li class="flex items-start">
 <span class="material-symbols-outlined text-primary-container mr-3 mt-0.5" data-icon="menu_book" data-weight="fill" style="font-variation-settings: 'FILL' 1;">menu_book</span>
-<span class="font-body-md text-body-md text-on-surface font-semibold">Comprehensive PDF Cheat-sheets</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">📘 Comprehensive PDF Cheat-sheets</span>
 </li>
 <li class="flex items-start">
 <span class="material-symbols-outlined text-primary-container mr-3 mt-0.5" data-icon="offline_pin" data-weight="fill" style="font-variation-settings: 'FILL' 1;">offline_pin</span>
-<span class="font-body-md text-body-md text-on-surface font-semibold">Download and Learn Offline anytime</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">📴 Download and Learn Offline anytime</span>
 </li>
 </ul>
 </div>
-<!-- TODO(backend): a real payment gateway (Paystack/Flutterwave) checkout should open here; the Convex mutation below just records purchase intent -->
-<a class="w-full max-w-md bg-primary-container text-on-primary font-label-bold text-label-bold py-4 px-8 rounded-lg hover:bg-primary transition-colors soft-shadow text-[18px] mb-6 flex items-center justify-center" href="dashboard.html" id="buy-main-offer">
-                    Buy Recordings + Ebook for ₦3,500
+<!-- TODO(backend): a real payment gateway checkout should open here; the Convex mutation below just records purchase intent -->
+<a class="w-full max-w-md bg-primary-container text-on-primary font-label-bold text-label-bold py-4 px-8 rounded-lg hover:bg-primary transition-colors soft-shadow text-[18px] mb-6 flex items-center justify-center" data-bounce="" href="dashboard.html" id="buy-main-offer">
+                    Buy Recordings + Ebook for ₦3,500 🚀
                     <span class="material-symbols-outlined ml-2" data-icon="arrow_forward">arrow_forward</span>
 </a>
 <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="budget-offer.html">
-                    Prefer just the raw video files without the ebook? Click here for the ₦2,500 option.
+                    👉 Prefer just the raw video files without the ebook? Click here for the ₦2,500 option.
                 </a>
 </div>
 </div>
@@ -222,17 +226,14 @@
 </div>
 </footer>
 <script>
-    document.getElementById('buy-main-offer').addEventListener('click', async function (e) {
+    document.getElementById('buy-main-offer').addEventListener('click', function (e) {
         e.preventDefault();
         var lead = window.nca.getLead();
-        if (lead && lead.email) {
-            try {
-                await window.ncaClient.mutation('purchases:create', { leadEmail: lead.email, tier: 'main_3500' });
-            } catch (err) {
-                console.error('Failed to record purchase in Convex:', err);
-            }
+        if (!lead || !lead.email) {
+            window.location.href = 'index.html';
+            return;
         }
-        window.location.href = 'dashboard.html';
+        window.ncaOpenCheckout('main_3500', lead, 'dashboard.html');
     });
 </script>
 </body></html>
