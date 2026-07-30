@@ -2,7 +2,7 @@
 
 Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](https://convex.dev). Frontend is static HTML + Tailwind CSS (via CDN) using the **Velocity Blue** design system — see [`DESIGN.md`](./DESIGN.md) for the full color, type, and component spec.
 
-**Logo note:** the CodeCave mark used in the header/footers (`<svg>` icon + "CodeCave" / "NoCode Developers Camp" wordmark) is a placeholder built from scratch — there's no real logo file in this project yet. Swap it for the real one by replacing the inline `<svg>...</svg>` block (search for `TODO(design)` in `index.html`, and the matching markup in the other three files' footers) with an `<img>` tag pointing at your actual logo asset.
+**Logo:** the real CodeCave logo lives at `assets/images/codecave-logo.png`, used in the header (`index.html`) and all four footers, paired with a "NoCode Developers Camp" tagline. It was auto-cropped from the original upload to remove excess transparent padding around the wordmark.
 
 ## Pages & Funnel Flow
 
