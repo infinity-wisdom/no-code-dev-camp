@@ -2,7 +2,7 @@
 
 Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](https://convex.dev). Frontend is static HTML + Tailwind CSS (via CDN) using the **Velocity Blue** design system — see [`DESIGN.md`](./DESIGN.md) for the full color, type, and component spec.
 
-**Logo:** the real CodeCave logo lives at `assets/images/codecave-logo.png`, used in the header (`index.html`) and all four footers, paired with a "NoCode Developers Camp" tagline. It was auto-cropped from the original upload to remove excess transparent padding around the wordmark.
+**Logo note:** the CodeCave mark used in the header/footers (`<svg>` icon + "CodeCave" / "NoCode Developers Camp" wordmark) is a placeholder built from scratch — there's no real logo file in this project yet. Swap it for the real one by replacing the inline `<svg>...</svg>` block (search for `TODO(design)` in `index.html`, and the matching markup in the other three files' footers) with an `<img>` tag pointing at your actual logo asset.
 
 ## Pages & Funnel Flow
 
@@ -49,6 +49,10 @@ index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
 | `convex/payments.ts` | `payments:verifyTransaction` — called from the browser after Flutterwave's modal reports success; re-checks the transaction server-side against Flutterwave's API before trusting it |
 | `convex/referrals.ts` | `referrals:countForEmail`, `referrals:recentForReferrer`, `referrals:leaderboard` — power the dashboard's progress bar, recent-referrals list, and top-10 table in real time |
 | `convex/http.ts` | Flutterwave webhook at `/payments/webhook`; `/leads/record-ip` and `/leads/recognize` for the returning-visitor check below |
+| `convex/emailTemplates.ts` | Brevo template ID config and sender identity — the one file to edit when wiring in real templates |
+| `convex/brevoClient.ts` | The single function that actually calls Brevo's API; everything else just calls this |
+| `convex/emailTriggers.ts` | Triggers 1–9 — signup, referral milestones, leaderboard rank, payment confirmations |
+| `convex/reminders.ts` + `convex/crons.ts` | Triggers 10–13 — the daily countdown and training-window reminders |
 
 The frontend loads Convex via the [script-tag client](https://docs.convex.dev/client/javascript/script-tag) (no bundler needed) — see `assets/js/convex-client.js`, which every page includes.
 
@@ -123,13 +127,43 @@ Checkout uses [Flutterwave's Inline checkout](https://developer.flutterwave.com/
 5. Test with Flutterwave's [test cards](https://developer.flutterwave.com/docs/testing-helpers) — e.g. card `4187427415564246`, CVV `828`, expiry `09/32`. Check the Convex dashboard's **Data** tab to confirm the matching `purchases` row flips to `"paid"`.
 6. When you're ready for real transactions, switch to your **Live** keys in the dashboard, re-run steps 2–3 with the live values, and re-run `npx convex deploy`.
 
+## Email Automation: Brevo
+
+All 13 triggers are implemented in Convex and send through Brevo's transactional email API. Nothing here needs a separate scheduler service — Convex's own cron jobs handle the time-based ones.
+
+| # | Trigger | File | Mechanism |
+|---|---|---|---|
+| 1 | Signup | `convex/emailTriggers.ts` (`afterLeadCreated`) | Scheduled from `leads:create` |
+| 2–4 | 1st / 3rd / 10th referral | `convex/emailTriggers.ts` (`afterReferralInserted`) | Exact-count check — counts only increase by 1, so this fires once per threshold with no extra flag needed |
+| 5–6 | First top-10 / top-3 | `convex/emailTriggers.ts` (`afterReferralInserted`) | Recomputes the full leaderboard in the same transaction as each new referral; guarded by a persisted flag since rank can move both directions |
+| 7–9 | Paid ₦2,500 / ₦3,500 / ₦5,000 | `convex/emailTriggers.ts` (`afterPurchasePaid`) | Scheduled from `purchases:markPaidById`, which is already idempotent |
+| 10–12 | 7 / 3 / 1 days to training | `convex/reminders.ts` + `convex/crons.ts` | Daily cron; internally checks the exact day-offset against `TRAINING_START` |
+| 13 | Daily training reminder (₦5,000 buyers) | `convex/reminders.ts` + `convex/crons.ts` | Separate daily cron, active only during the 7-day training window, filtered to paid `live_5000` purchases |
+
+**Idempotency:** every one-time trigger (1–6, 10–13) is guarded so retries or re-runs never double-send. Triggers 1 and 10–13 use a `sentEmailTriggers: string[]` field on each lead (see `convex/schema.ts`) — checked and updated in the same mutation/action that sends. Triggers 2–4 rely on referral counts only ever increasing by exactly one, so an exact-equality check is naturally idempotent without needing a flag. Triggers 7–9 ride on `purchases:markPaidById`'s existing `status === "paid"` guard.
+
+**All Brevo API calls go through one function** — `convex/brevoClient.ts`'s `sendTemplateEmail` — rather than being duplicated across every trigger. Every other file just calls it with a template ID and params.
+
+### One-time setup
+
+1. Set your Brevo API key:
+   ```bash
+   npx convex env set BREVO_API_KEY xkeysib-xxxxxxxxxxxx
+   ```
+2. Open `convex/emailTemplates.ts` and replace each `0` with the real Brevo Template ID from your dashboard (Campaigns → Templates → Transactional). Until a given ID is set, that trigger is skipped with a console warning rather than failing — so you can wire this in gradually.
+3. Confirm `BREVO_SENDER` in the same file matches the sender you created against your verified domain.
+4. Deploy — cron jobs activate automatically once pushed; no separate registration step:
+   ```bash
+   npx convex deploy
+   ```
+
 ## Backend Integration Points
 
 Everything data-related (leads, purchases, referrals, leaderboard) and payment processing (Flutterwave checkout + server-side verification + webhook) are now live via Convex. What's still a `TODO(backend)` in the code:
 
 - **Flutterwave public/secret keys and webhook hash** — placeholders until you follow the setup steps above
 - **Telegram invite link** — `dashboard.html` has a placeholder `TELEGRAM_INVITE_LINK`; replace it with your real group/channel invite link once you have one
-- **Transactional emails** (welcome email, purchase receipt) — not yet implemented; would likely be triggered from `convex/payments.ts` once a purchase is marked `"paid"`
+- **Brevo template IDs** — all 13 are placeholder `0`s in `convex/emailTemplates.ts` until you create the real templates and drop in their IDs
 - **Live/test mode switch** — currently points at whichever Flutterwave keys you've configured; worth double-checking you're on Test keys until you're ready to accept real money
 
 ## Hosting on GitHub Pages

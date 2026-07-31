@@ -16,6 +16,12 @@ export default defineSchema({
     // returning visitors on a new browser/device where localStorage is
     // empty. See convex/http.ts for how this is set and matched.
     ipHash: v.optional(v.string()),
+    // Keys of one-time email triggers already sent for this lead (e.g.
+    // "welcome", "first_referral", "top_10"). Checked before every one-time
+    // send in convex/emailTriggers.ts so retries/re-runs never double-send.
+    // An array rather than named boolean fields so new triggers don't need
+    // a schema migration.
+    sentEmailTriggers: v.optional(v.array(v.string())),
     createdAt: v.number(),
   })
     .index("by_email", ["email"])

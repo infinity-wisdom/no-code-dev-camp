@@ -1,4 +1,5 @@
 import { mutation, query, internalMutation, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { CURRENCY, TIER_PRICING } from "./pricing";
 
@@ -64,6 +65,13 @@ export const markPaidById = internalMutation({
     const purchase = await ctx.db.get(args.purchaseId);
     if (!purchase || purchase.status === "paid") return; // idempotent
     await ctx.db.patch(args.purchaseId, { status: "paid", flwTransactionId: args.flwTransactionId });
+
+    // Triggers 7–9 — payment confirmation, tier-specific. Scheduled after the
+    // patch above, so it only fires once per purchase (the idempotent check
+    // above guarantees this mutation's body only reaches here once).
+    await ctx.scheduler.runAfter(0, internal.emailTriggers.afterPurchasePaid, {
+      purchaseId: args.purchaseId,
+    });
   },
 });
 
@@ -83,6 +91,20 @@ export const getByEmail = internalQuery({
       .query("purchases")
       .withIndex("by_email", (q) => q.eq("leadEmail", args.email.trim().toLowerCase()))
       .collect();
+  },
+});
+
+/**
+ * Internal — used by convex/reminders.ts (trigger 13, the daily training
+ * reminder) to find everyone who's paid for the live cohort.
+ */
+export const listPaidByTier = internalQuery({
+  args: {
+    tier: v.union(v.literal("budget_2500"), v.literal("main_3500"), v.literal("live_5000")),
+  },
+  handler: async (ctx, args) => {
+    const all = await ctx.db.query("purchases").collect();
+    return all.filter((p) => p.tier === args.tier && p.status === "paid");
   },
 });
 

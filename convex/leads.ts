@@ -1,4 +1,5 @@
 import { mutation, query, internalMutation, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
 /**
@@ -37,6 +38,10 @@ export const create = mutation({
       createdAt: Date.now(),
     });
 
+    // Trigger 1 — welcome email. Scheduled rather than sent inline so a slow
+    // or failed Brevo call never blocks or fails the signup itself.
+    await ctx.scheduler.runAfter(0, internal.emailTriggers.afterLeadCreated, { leadId });
+
     // Don't let someone credit themselves for their own referral link.
     if (args.referredByEmail && args.referredByEmail.toLowerCase() !== email) {
       await ctx.db.insert("referrals", {
@@ -44,6 +49,12 @@ export const create = mutation({
         referredEmail: email,
         referredName: `${args.firstName} ${args.lastName}`.trim(),
         createdAt: Date.now(),
+      });
+
+      // Triggers 2–6 — referral count + leaderboard rank milestones for the referrer.
+      await ctx.scheduler.runAfter(0, internal.emailTriggers.afterReferralInserted, {
+        referrerEmail: args.referredByEmail.toLowerCase(),
+        referredName: `${args.firstName} ${args.lastName}`.trim(),
       });
     }
 
@@ -95,5 +106,37 @@ export const getByIpHash = internalQuery({
       .collect();
     if (matches.length === 0) return null;
     return matches.reduce((latest, lead) => (lead.createdAt > latest.createdAt ? lead : latest));
+  },
+});
+
+/**
+ * Internal — used by convex/reminders.ts (the 7/3/1-day countdown cron) to
+ * notify every signed-up lead, regardless of payment status.
+ */
+export const listAll = internalQuery({
+  args: {},
+  handler: async (ctx) => ctx.db.query("leads").collect(),
+});
+
+/** Internal — looks up a single lead by ID, used by convex/reminders.ts. */
+export const getById = internalQuery({
+  args: { leadId: v.id("leads") },
+  handler: async (ctx, args) => ctx.db.get(args.leadId),
+});
+
+/**
+ * Internal — marks a one-time trigger key as sent for this lead. Shared by
+ * convex/emailTriggers.ts and convex/reminders.ts so both use the same
+ * idempotency mechanism.
+ */
+export const markTriggerSent = internalMutation({
+  args: { leadId: v.id("leads"), triggerKey: v.string() },
+  handler: async (ctx, args) => {
+    const lead = await ctx.db.get(args.leadId);
+    if (!lead) return;
+    const flags = new Set(lead.sentEmailTriggers ?? []);
+    if (flags.has(args.triggerKey)) return;
+    flags.add(args.triggerKey);
+    await ctx.db.patch(args.leadId, { sentEmailTriggers: Array.from(flags) });
   },
 });
