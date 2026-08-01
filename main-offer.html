@@ -166,12 +166,16 @@
 <!-- Main Content Canvas -->
 <main class="flex-grow flex items-center justify-center py-section-padding-mobile md:py-section-padding-desktop px-gutter w-full">
 <div class="max-w-[700px] w-full mx-auto flex flex-col items-center">
-<!-- Video Placeholder -->
-<div class="w-full aspect-video rounded-xl bg-surface-variant flex items-center justify-center relative overflow-hidden soft-shadow mb-8 border border-outline-variant" data-animate="fade-left">
-<img class="absolute inset-0 w-full h-full object-cover opacity-60" data-alt="A professional, well-lit video placeholder frame for an e-learning course. The image features a clean, modern desk setup with a sleek laptop, a notebook, and a steaming cup of coffee. The lighting is soft and natural, emphasizing a productive and focused learning environment. The color palette is predominantly light with crisp white surfaces, subtle blue accents matching the brand, and deep blacks for contrast. A subtle, high-end aesthetic is maintained throughout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd4cU50bqXujtjY-05SPQk3rJ8cxXXIAX8N4lVr0LdV0tiPGblFK7xv0ueqD-R62ULkPKTU7GYN_yEUllCNXL2_avZSo_ntvBG3kan0Kqkj7uMfHfHwc_KtNw9VkGZEe6Xe-s2i83tB1dYzNMydA4UNSGxukPpe2Ik2noZVgFypck_ZwqRjKp2wvf1p__vMYPPN_QXyxGCWA9WcD-kP8zEk4TP5HuqJC8a0pqUpqEXuHYDRdDsrvepTR073r78aSi0jpp8gELG0Aw"/>
+<!-- Intro Video: click-to-play YouTube embed. Loading the real iframe only on
+     click (rather than embedding it directly) keeps the page fast — YouTube's
+     embed script is heavy and otherwise loads on every visit whether or not
+     anyone watches. -->
+<!-- TODO(content): replace with the real YouTube video ID once it's uploaded -->
+<div class="w-full aspect-video rounded-xl bg-surface-variant flex items-center justify-center relative overflow-hidden soft-shadow mb-8 border border-outline-variant cursor-pointer group" data-animate="fade-left" data-youtube-id="REPLACE_WITH_YOUTUBE_VIDEO_ID" id="intro-video-container">
+<img alt="Intro video thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-60" id="intro-video-thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd4cU50bqXujtjY-05SPQk3rJ8cxXXIAX8N4lVr0LdV0tiPGblFK7xv0ueqD-R62ULkPKTU7GYN_yEUllCNXL2_avZSo_ntvBG3kan0Kqkj7uMfHfHwc_KtNw9VkGZEe6Xe-s2i83tB1dYzNMydA4UNSGxukPpe2Ik2noZVgFypck_ZwqRjKp2wvf1p__vMYPPN_QXyxGCWA9WcD-kP8zEk4TP5HuqJC8a0pqUpqEXuHYDRdDsrvepTR073r78aSi0jpp8gELG0Aw"/>
 <div class="absolute inset-0 bg-primary/10"></div>
-<button class="relative z-10 w-20 h-20 bg-primary-container text-on-primary rounded-full flex items-center justify-center hover:bg-primary transition-colors soft-shadow group">
-<span class="material-symbols-outlined text-headline-xl group-hover:scale-110 transition-transform" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<button aria-label="Play intro video" class="relative z-10 w-20 h-20 bg-primary-container text-on-primary rounded-full flex items-center justify-center hover:bg-primary transition-colors soft-shadow group-hover:scale-110" id="intro-video-play-btn" type="button">
+<span class="material-symbols-outlined text-headline-xl" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
 </button>
 </div>
 <!-- Content Area -->
@@ -237,6 +241,37 @@
 </div>
 </footer>
 <script>
+    (function () {
+        var container = document.getElementById('intro-video-container');
+        var playBtn = document.getElementById('intro-video-play-btn');
+        var thumbnail = document.getElementById('intro-video-thumbnail');
+        var videoId = container.getAttribute('data-youtube-id');
+        var hasRealVideo = videoId && videoId.indexOf('REPLACE_WITH') !== 0;
+
+        // Once a real video ID is set, use YouTube's own auto-generated
+        // thumbnail instead of the generic stock placeholder image.
+        if (hasRealVideo && thumbnail) {
+            thumbnail.src = 'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg';
+        }
+
+        playBtn.addEventListener('click', function () {
+            if (!hasRealVideo) {
+                console.warn('No YouTube video ID set yet — update data-youtube-id on #intro-video-container.');
+                return;
+            }
+            var iframe = document.createElement('iframe');
+            iframe.className = 'absolute inset-0 w-full h-full';
+            iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+            iframe.title = 'NoCode Developers Camp — Intro Video';
+            iframe.frameBorder = '0';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+            container.innerHTML = '';
+            container.classList.remove('cursor-pointer', 'group');
+            container.appendChild(iframe);
+        });
+    })();
+
     document.getElementById('buy-main-offer').addEventListener('click', function (e) {
         e.preventDefault();
         var lead = window.nca.getLead();

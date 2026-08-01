@@ -1,27 +1,47 @@
 /**
- * Dashboard avatar creator. Fully client-side: the uploaded photo is read
- * via FileReader and drawn straight to a <canvas> — it's never sent to
- * Convex or anywhere else. This matters because photos are personal data;
- * there's no reason for this feature to need a backend at all.
+ * Dashboard avatar creator — v2, using the real flyer artwork as the template.
+ *
+ * Still fully client-side: the uploaded photo is read via FileReader and
+ * drawn straight to <canvas>. It's never sent to Convex or anywhere else.
+ *
+ * Geometry below (circle center/radius, ring color) was measured directly
+ * from assets/images/avatar-flyer-template.png at its native 1080x1350
+ * resolution — if that artwork file is ever replaced with a redesigned
+ * flyer, these numbers need to be re-measured to match the new circle.
  */
 (function () {
-  var canvas, ctx, uploadedImg = null, theme = "blue";
+  var TEMPLATE_SRC = "./assets/images/avatar-flyer-template.png";
+  var TEMPLATE_W = 1080;
+  var TEMPLATE_H = 1350;
 
-  var THEMES = {
-    blue: { bg1: "#1A56DB", bg2: "#38BDF8", ring1: "#38BDF8", ring2: "#ffffff" },
-    navy: { bg1: "#0B1C30", bg2: "#1A56DB", ring1: "#38BDF8", ring2: "#7bd0ff" },
-  };
+  // The circular photo slot baked into the flyer artwork.
+  var CIRCLE_CX = 748;
+  var CIRCLE_CY = 631;
+  var CIRCLE_OUTER_R = 302; // covers right up to the outer edge of the blue ring
+  var CIRCLE_INNER_R = 292; // where the ring's inner edge sits
+  var RING_COLOR = "#004AAD"; // measured as rgb(0, 74, 173)
+  var RING_WIDTH = 11;
+
+  var canvas, ctx, templateImg, uploadedImg = null, templateLoaded = false;
 
   function init() {
     canvas = document.getElementById("avatar-canvas");
     if (!canvas) return; // not on this page
+
     ctx = canvas.getContext("2d");
-    drawEmptyState();
+    canvas.width = TEMPLATE_W;
+    canvas.height = TEMPLATE_H;
+
+    templateImg = new Image();
+    templateImg.onload = function () {
+      templateLoaded = true;
+      drawTemplate();
+    };
+    templateImg.src = TEMPLATE_SRC;
 
     var fileInput = document.getElementById("avatar-file-input");
     var dropZone = document.getElementById("avatar-drop-zone");
     var downloadBtn = document.getElementById("avatar-download-btn");
-    var themeButtons = document.querySelectorAll("[data-avatar-theme]");
 
     dropZone.addEventListener("click", function () { fileInput.click(); });
 
@@ -46,19 +66,10 @@
       if (file) handleFile(file);
     });
 
-    themeButtons.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        theme = btn.getAttribute("data-avatar-theme");
-        themeButtons.forEach(function (b) { b.classList.remove("ring-2", "ring-primary-container", "ring-offset-2"); });
-        btn.classList.add("ring-2", "ring-primary-container", "ring-offset-2");
-        if (uploadedImg) render();
-      });
-    });
-
     downloadBtn.addEventListener("click", function () {
       if (!uploadedImg) return;
       var link = document.createElement("a");
-      link.download = "nocode-developers-camp-avatar.png";
+      link.download = "nocode-developers-camp-flyer.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
       if (window.ncaConfetti) window.ncaConfetti(downloadBtn);
@@ -81,84 +92,41 @@
     reader.readAsDataURL(file);
   }
 
-  function drawEmptyState() {
-    var size = canvas.width;
-    ctx.clearRect(0, 0, size, size);
-    roundRectPath(0, 0, size, size, 24);
-    ctx.fillStyle = "#F0F9FF";
-    ctx.fill();
-    ctx.fillStyle = "#94A3B8";
-    ctx.font = "600 20px Inter, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("Upload a photo to preview", size / 2, size / 2 - 10);
-    ctx.fillText("your avatar", size / 2, size / 2 + 22);
+  /** Before a photo is uploaded, just show the flyer as-is (it already looks complete). */
+  function drawTemplate() {
+    if (!templateLoaded) return;
+    ctx.clearRect(0, 0, TEMPLATE_W, TEMPLATE_H);
+    ctx.drawImage(templateImg, 0, 0, TEMPLATE_W, TEMPLATE_H);
   }
 
+  /** After upload: template, then the photo clipped into the circle, then the ring redrawn on top. */
   function render() {
-    var t = THEMES[theme];
-    var size = canvas.width;
-    ctx.clearRect(0, 0, size, size);
+    if (!templateLoaded || !uploadedImg) return;
 
-    var grad = ctx.createLinearGradient(0, 0, size, size);
-    grad.addColorStop(0, t.bg1);
-    grad.addColorStop(1, t.bg2);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, size, size);
-
-    // Subtle dot texture, matching the dashboard hero background
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    for (var y = 10; y < size; y += 26) {
-      for (var x = 10; x < size; x += 26) {
-        ctx.beginPath();
-        ctx.arc(x, y, 1.4, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    var cx = size / 2;
-    var cy = size / 2 - size * 0.05;
-    var r = size * 0.32;
+    ctx.clearRect(0, 0, TEMPLATE_W, TEMPLATE_H);
+    ctx.drawImage(templateImg, 0, 0, TEMPLATE_W, TEMPLATE_H);
 
     ctx.save();
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.arc(CIRCLE_CX, CIRCLE_CY, CIRCLE_OUTER_R, 0, Math.PI * 2);
     ctx.closePath();
     ctx.clip();
-    drawImageCover(uploadedImg, cx - r, cy - r, r * 2, r * 2);
+    drawImageCover(
+      uploadedImg,
+      CIRCLE_CX - CIRCLE_OUTER_R,
+      CIRCLE_CY - CIRCLE_OUTER_R,
+      CIRCLE_OUTER_R * 2,
+      CIRCLE_OUTER_R * 2,
+    );
     ctx.restore();
 
+    // Redraw the ring on top so it frames the photo cleanly, covering any
+    // edge softness from the clip above.
     ctx.beginPath();
-    ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = t.ring2;
+    ctx.arc(CIRCLE_CX, CIRCLE_CY, (CIRCLE_OUTER_R + CIRCLE_INNER_R) / 2, 0, Math.PI * 2);
+    ctx.lineWidth = RING_WIDTH;
+    ctx.strokeStyle = RING_COLOR;
     ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, r + 15, 0, Math.PI * 2);
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = t.ring1;
-    ctx.stroke();
-
-    // Badge icon, echoes the site's CodeCave mark
-    var bx = cx + r * 0.68, by = cy + r * 0.68, br = size * 0.058;
-    ctx.beginPath();
-    ctx.arc(bx, by, br, 0, Math.PI * 2);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.font = "700 " + Math.round(br * 0.95) + "px 'Courier New', monospace";
-    ctx.fillStyle = t.bg1;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("</>", bx, by + 1);
-
-    ctx.textBaseline = "alphabetic";
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "800 " + Math.round(size * 0.052) + "px Inter, sans-serif";
-    ctx.fillText("CodeCave", size / 2, size * 0.88);
-    ctx.font = "600 " + Math.round(size * 0.028) + "px Inter, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.fillText("NOCODE DEVELOPERS CAMP · 2026", size / 2, size * 0.935);
   }
 
   function drawImageCover(img, x, y, w, h) {
@@ -177,16 +145,6 @@
       sy = (img.height - sh) / 2;
     }
     ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
-  }
-
-  function roundRectPath(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
   }
 
   document.addEventListener("DOMContentLoaded", init);

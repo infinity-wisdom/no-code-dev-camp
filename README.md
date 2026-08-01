@@ -24,10 +24,16 @@ index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
 ## Dashboard Details
 
 - **Greeting** — `dashboard.html` pulls the lead's first name from `localStorage` (`window.nca.getLead()`) and sets "Welcome back, [First Name]!"; guests with no stored lead see a generic "Welcome back!" instead.
-- **Countdown** — now a real live countdown to Aug 24, 2026 (same target date as the one on `index.html`), not just a decorative pulse animation.
-- **Hero background** — an original abstract pattern (dot grid + gradient blobs + floating code glyphs), built from scratch rather than a stock photo — embedding a photo we don't hold the rights to into a production site would be a copyright risk. Swap the background `<div>` block in the hero section for a real photo later if you have a licensed one.
-- **₦5,000 CTA** — bigger, with a pulsing glow ring (`.nca-glow-ring` in `animations.css`) and a "🔥 Most Popular Upgrade" badge above it, to make it the clear visual focal point of the hero.
-- **Avatar creator** — a new section lets a lead upload a photo and get a branded, circular "NoCode Developers Camp" frame (via `<canvas>`), then download it as a PNG for social sharing. This is entirely client-side (`assets/js/avatar-creator.js`) — the photo is read with `FileReader` and drawn straight to canvas; it's never uploaded to Convex or anywhere else, since there's no reason a feature like this needs a backend at all.
+- **Countdown** — a real live countdown to Aug 24, 2026 (same target date as the one on `index.html`), not a decorative animation.
+- **Hero background** — an original abstract pattern (dot grid + gradient blobs + floating code glyphs), built from scratch rather than a stock photo — embedding a photo we don't hold the rights to into a production site would be a copyright risk.
+- **₦5,000 CTA** — bigger, with a pulsing glow ring (`.nca-glow-ring` in `animations.css`) and a "🔥 Most Popular Upgrade" badge above it.
+- **Other Offers section** — two cards (₦2,500 and ₦3,500) let a lead buy either tier straight from the dashboard, using the same checkout modal as `main-offer.html`/`budget-offer.html`. Each button checks `purchases:getPaidTiersForEmail` and shows "✅ Purchased" (disabled) if that tier's already paid for.
+- **Community cards** — WhatsApp and Telegram links are live, each with the real brand icon (inline SVG, not generic Material icons). Telegram unlocks (with a confetti burst) only once `purchases:getPaidTiersForEmail` shows a paid `live_5000` purchase.
+- **Instructor socials** — LinkedIn, X, YouTube, and a personal profile link, each labeled with its real brand icon.
+- **Avatar creator** — uploads a photo and composites it directly into the official camp flyer (`assets/images/avatar-flyer-template.png`), clipped into the flyer's circular photo slot and re-framed with its ring, then downloadable as the full poster. Entirely client-side (`assets/js/avatar-creator.js`) — the photo is read via `FileReader` and drawn straight to `<canvas>`; it's never uploaded to Convex or anywhere else. If that template artwork is ever replaced with a redesigned flyer, the circle's center/radius constants at the top of `avatar-creator.js` need to be re-measured to match.
+- **Unlockable rewards** — the 3-invite and 10-invite rewards are named "Prep Guide eBook 1 (AI Prompt Engineering & Training Deliverables)" and "Prep Guide eBook 2 (Backend Hosting, APIs & Cheat Sheets)". Note: the Brevo email templates for triggers #3/#4 (see Email Automation below) were written before this rename and may still reference the old names — worth checking if you've already built those templates in Brevo.
+
+`main-offer.html`'s intro video is a click-to-play YouTube embed (`#intro-video-container`, `data-youtube-id` attribute) rather than a static image — loads the real YouTube iframe only once someone clicks play, not on every page load. Swap the placeholder `data-youtube-id="REPLACE_WITH_YOUTUBE_VIDEO_ID"` for the real video ID once it's uploaded.
 
 ## Motion & Micro-interactions
 
