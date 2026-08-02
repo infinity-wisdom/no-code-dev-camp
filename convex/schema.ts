@@ -50,12 +50,13 @@ export default defineSchema({
     .index("by_email", ["leadEmail"])
     .index("by_txRef", ["txRef"]),
 
-  // One row per successful referral, written transactionally inside
-  // leads.create when a new lead signs up with a referredByEmail.
-  referrals: defineTable({
-    referrerEmail: v.string(),
-    referredEmail: v.string(),
-    referredName: v.string(),
-    createdAt: v.number(),
-  }).index("by_referrer", ["referrerEmail"]),
+  // One per gated file — maps a stable key ("guide_1", "guide_2") to a
+  // Convex File Storage ID. Populated by scripts/upload-guides.js, not
+  // edited by hand. The PDF bytes themselves live in Convex storage, not
+  // in this repo or any public web path — the only way to get them is
+  // through the gated /guides/download HTTP route in convex/http.ts.
+  fileAssets: defineTable({
+    key: v.string(),
+    storageId: v.id("_storage"),
+  }).index("by_key", ["key"]),
 });

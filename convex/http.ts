@@ -1,6 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
+import { GUIDE_REQUIREMENTS } from "./guideFiles";
 
 const http = httpRouter();
 
@@ -168,6 +169,77 @@ http.route({
 
     return new Response(null, { status: 200 });
   }),
+});
+
+/**
+ * The real gate for the two referral-unlocked prep guides. Unlike the old
+ * approach (a static file in the repo, with the dashboard just hiding the
+ * download button until enough referrals), this re-checks the referral
+ * count server-side, against the same `referrals` table Convex already
+ * trusts — a client can't get the file bytes just by knowing the URL or
+ * editing the page's HTML/JS.
+ *
+ * Called as: GET /guides/download?key=guide_1&email=someone@example.com
+ *
+ * This is intentionally NOT stronger than "know a real, unlocked lead's
+ * email" — there's no login system on this site, so email is the only
+ * identity signal available. That's an acceptable tradeoff for two bonus
+ * PDFs; it is not the right pattern to copy for anything actually
+ * sensitive.
+ */
+http.route({
+  path: "/guides/download",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const url = new URL(request.url);
+    const key = url.searchParams.get("key");
+    const email = url.searchParams.get("email");
+
+    if (key !== "guide_1" && key !== "guide_2") {
+      return withCors("Unknown guide key.", { status: 400 });
+    }
+    if (!email) {
+      return withCors("Missing email.", { status: 400 });
+    }
+
+    const referralCount = await ctx.runQuery(api.referrals.countForEmail, { email });
+    const required = GUIDE_REQUIREMENTS[key];
+
+    if (referralCount < required) {
+      return withCors(
+        `Not unlocked yet — this guide requires ${required} referrals (you have ${referralCount}).`,
+        { status: 403 },
+      );
+    }
+
+    const storageId = await ctx.runQuery(internal.guideFiles.getGuideStorageId, { key });
+    if (!storageId) {
+      // Eligible, but the file hasn't been uploaded yet (see scripts/upload-guides.js).
+      return withCors("This guide isn't available for download yet — check back soon.", { status: 503 });
+    }
+
+    const blob = await ctx.storage.get(storageId);
+    if (!blob) {
+      return withCors("File not found.", { status: 404 });
+    }
+
+    const filename = key === "guide_1" ? "prep-guide-1-ai-prompt-engineering.pdf" : "prep-guide-2-backend-hosting-apis.pdf";
+
+    return new Response(blob, {
+      status: 200,
+      headers: {
+        ...CORS_HEADERS,
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+      },
+    });
+  }),
+});
+
+http.route({
+  path: "/guides/download",
+  method: "OPTIONS",
+  handler: httpAction(async () => withCors(null, { status: 204 })),
 });
 
 export default http;

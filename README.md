@@ -31,7 +31,7 @@ index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
 - **Community cards** — WhatsApp and Telegram links are live, each with the real brand icon (inline SVG, not generic Material icons). Telegram unlocks (with a confetti burst) only once `purchases:getPaidTiersForEmail` shows a paid `live_5000` purchase.
 - **Instructor socials** — LinkedIn, X, YouTube, and a personal profile link, each labeled with its real brand icon.
 - **Avatar creator** — uploads a photo and composites it directly into the official camp flyer (`assets/images/avatar-flyer-template.png`), clipped into the flyer's circular photo slot and re-framed with its ring, then downloadable as the full poster. Entirely client-side (`assets/js/avatar-creator.js`) — the photo is read via `FileReader` and drawn straight to `<canvas>`; it's never uploaded to Convex or anywhere else. If that template artwork is ever replaced with a redesigned flyer, the circle's center/radius constants at the top of `avatar-creator.js` need to be re-measured to match.
-- **Unlockable rewards** — the 3-invite and 10-invite rewards are named "Prep Guide eBook 1 (AI Prompt Engineering & Training Deliverables)" and "Prep Guide eBook 2 (Backend Hosting, APIs & Cheat Sheets)". Note: the Brevo email templates for triggers #3/#4 (see Email Automation below) were written before this rename and may still reference the old names — worth checking if you've already built those templates in Brevo.
+- **Unlockable rewards** — the 3-invite and 10-invite rewards are named "Prep Guide eBook 1 (AI Prompt Engineering & Training Deliverables)" and "Prep Guide eBook 2 (Backend Hosting, APIs & Cheat Sheets)", and are real, server-gated PDF downloads — see **Gated Downloads** below. Note: the Brevo email templates for triggers #3/#4 (see Email Automation below) were written before this rename and may still reference the old names — worth checking if you've already built those templates in Brevo.
 
 `main-offer.html`'s intro video is a click-to-play YouTube embed (`#intro-video-container`, `data-youtube-id` attribute) rather than a static image — loads the real YouTube iframe only once someone clicks play, not on every page load. Swap the placeholder `data-youtube-id="REPLACE_WITH_YOUTUBE_VIDEO_ID"` for the real video ID once it's uploaded.
 
@@ -54,7 +54,8 @@ index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
 | `convex/purchases.ts` | `purchases:create` (public — records purchase intent as `"pending"` with a server-generated `txRef` and price); `purchases:getPaidTiersForEmail` (public — powers the Telegram unlock on the dashboard); internal query/mutations used only by verified payment flows |
 | `convex/payments.ts` | `payments:verifyTransaction` — called from the browser after Flutterwave's modal reports success; re-checks the transaction server-side against Flutterwave's API before trusting it |
 | `convex/referrals.ts` | `referrals:countForEmail`, `referrals:recentForReferrer`, `referrals:leaderboard` — power the dashboard's progress bar, recent-referrals list, and top-10 table in real time |
-| `convex/http.ts` | Flutterwave webhook at `/payments/webhook`; `/leads/record-ip` and `/leads/recognize` for the returning-visitor check below |
+| `convex/http.ts` | Flutterwave webhook at `/payments/webhook`; `/leads/record-ip` and `/leads/recognize` for the returning-visitor check below; `/guides/download` for the gated prep guide PDFs |
+| `convex/guideFiles.ts` | Manages the two gated PDFs in Convex File Storage — upload plumbing (admin-secret gated) and the lookup used by the download route |
 | `convex/emailTemplates.ts` | Brevo template ID config and sender identity — the one file to edit when wiring in real templates |
 | `convex/brevoClient.ts` | The single function that actually calls Brevo's API; everything else just calls this |
 | `convex/emailTriggers.ts` | Triggers 1–9 — signup, referral milestones, leaderboard rank, payment confirmations |
@@ -104,6 +105,31 @@ Requires one more env var:
 ```bash
 npx convex env set IP_HASH_SALT <a-long-random-string>
 ```
+
+## Gated Downloads: Prep Guide PDFs
+
+The 3-referral and 10-referral rewards ("Prep Guide eBook 1" and "eBook 2") are real, server-gated downloads — not just a UI-hidden link to a static file. The PDFs live in **Convex File Storage**, not in this repo or any public web path, and `convex/http.ts`'s `/guides/download` route re-checks the requester's actual referral count (against the same `referrals` table Convex already trusts) before ever returning the file bytes. Knowing or guessing the download URL isn't enough — the count has to genuinely be there.
+
+This intentionally isn't a full auth system — there's no login on this site, so email is the only identity signal available, and someone who knows another lead's exact email could download on their behalf. That's an acceptable tradeoff for two bonus PDFs; don't reuse this pattern as-is for anything more sensitive.
+
+### One-time setup
+
+1. Set an admin secret — this is what stops a random visitor from calling the upload mutations themselves (they're public functions, since the upload script needs to call them from outside Convex, which internal-only functions can't be called from):
+   ```bash
+   npx convex env set ADMIN_UPLOAD_SECRET <a-long-random-string>
+   ```
+2. Set the same value in your local shell before running the script:
+   ```bash
+   export ADMIN_UPLOAD_SECRET=<the-same-string>          # macOS/Linux
+   $env:ADMIN_UPLOAD_SECRET = "<the-same-string>"          # Windows PowerShell
+   ```
+3. Place the two PDFs in the project root as `prep-guide-1.pdf` and `prep-guide-2.pdf` — **these are gitignored on purpose** (see `.gitignore`) and must never be committed; the only copy that should exist after setup is the one inside Convex File Storage.
+4. Run:
+   ```bash
+   node scripts/upload-guides.js
+   ```
+   This uploads both files and records their Convex Storage IDs in the `fileAssets` table. Re-run any time you want to replace either file — it overwrites the previous upload rather than duplicating it.
+5. Once uploaded, you can delete the local `prep-guide-*.pdf` files — the dashboard's download links pull directly from Convex Storage via the gate, not from anything local.
 
 ## Payments: Flutterwave
 
