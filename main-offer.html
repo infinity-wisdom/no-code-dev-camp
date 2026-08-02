@@ -166,18 +166,11 @@
 <!-- Main Content Canvas -->
 <main class="flex-grow flex items-center justify-center py-section-padding-mobile md:py-section-padding-desktop px-gutter w-full">
 <div class="max-w-[700px] w-full mx-auto flex flex-col items-center">
-<!-- Intro Video: click-to-play YouTube embed. Loading the real iframe only on
-     click (rather than embedding it directly) keeps the page fast — YouTube's
-     embed script is heavy and otherwise loads on every visit whether or not
-     anyone watches. -->
-<!-- TODO(content): replace with the real YouTube video ID once it's uploaded -->
-<div class="w-full aspect-video rounded-xl bg-surface-variant flex items-center justify-center relative overflow-hidden soft-shadow mb-8 border border-outline-variant cursor-pointer group" data-animate="fade-left" data-youtube-id="REPLACE_WITH_YOUTUBE_VIDEO_ID" id="intro-video-container">
-<img alt="Intro video thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-60" id="intro-video-thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd4cU50bqXujtjY-05SPQk3rJ8cxXXIAX8N4lVr0LdV0tiPGblFK7xv0ueqD-R62ULkPKTU7GYN_yEUllCNXL2_avZSo_ntvBG3kan0Kqkj7uMfHfHwc_KtNw9VkGZEe6Xe-s2i83tB1dYzNMydA4UNSGxukPpe2Ik2noZVgFypck_ZwqRjKp2wvf1p__vMYPPN_QXyxGCWA9WcD-kP8zEk4TP5HuqJC8a0pqUpqEXuHYDRdDsrvepTR073r78aSi0jpp8gELG0Aw"/>
-<div class="absolute inset-0 bg-primary/10"></div>
-<button aria-label="Play intro video" class="relative z-10 w-20 h-20 bg-primary-container text-on-primary rounded-full flex items-center justify-center hover:bg-primary transition-colors soft-shadow group-hover:scale-110" id="intro-video-play-btn" type="button">
-<span class="material-symbols-outlined text-headline-xl" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
-</button>
-</div>
+<!-- Intro Video: autoplaying, muted, looping YouTube embed. Muted is required
+     for autoplay to actually work across browsers (Chrome/Safari block
+     unmuted autoplay outright); loop=1 + playlist=<same id> is YouTube's
+     documented way to loop a single video. -->
+<div class="w-full aspect-video rounded-xl bg-surface-variant relative overflow-hidden soft-shadow mb-8 border border-outline-variant" data-animate="fade-left" data-youtube-id="-xllgHz-cmo" id="intro-video-container"></div>
 <!-- Content Area -->
 <div class="bg-surface rounded-[16px] border border-outline-variant p-8 md:p-12 w-full flex flex-col items-center text-center soft-shadow relative z-10" data-animate="pop">
 <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4">
@@ -238,33 +231,26 @@
 <script>
     (function () {
         var container = document.getElementById('intro-video-container');
-        var playBtn = document.getElementById('intro-video-play-btn');
-        var thumbnail = document.getElementById('intro-video-thumbnail');
         var videoId = container.getAttribute('data-youtube-id');
         var hasRealVideo = videoId && videoId.indexOf('REPLACE_WITH') !== 0;
 
-        // Once a real video ID is set, use YouTube's own auto-generated
-        // thumbnail instead of the generic stock placeholder image.
-        if (hasRealVideo && thumbnail) {
-            thumbnail.src = 'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg';
+        if (!hasRealVideo) {
+            console.warn('No YouTube video ID set yet — update data-youtube-id on #intro-video-container.');
+            return;
         }
 
-        playBtn.addEventListener('click', function () {
-            if (!hasRealVideo) {
-                console.warn('No YouTube video ID set yet — update data-youtube-id on #intro-video-container.');
-                return;
-            }
-            var iframe = document.createElement('iframe');
-            iframe.className = 'absolute inset-0 w-full h-full';
-            iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
-            iframe.title = 'NoCode Developers Camp — Intro Video';
-            iframe.frameBorder = '0';
-            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-            iframe.allowFullscreen = true;
-            container.innerHTML = '';
-            container.classList.remove('cursor-pointer', 'group');
-            container.appendChild(iframe);
-        });
+        var iframe = document.createElement('iframe');
+        iframe.className = 'absolute inset-0 w-full h-full';
+        // mute=1 is required for autoplay=1 to actually be honored by
+        // browsers; loop=1 combined with playlist=<same video id> is
+        // YouTube's documented way to loop a single video indefinitely.
+        iframe.src = 'https://www.youtube.com/embed/' + videoId +
+            '?autoplay=1&mute=1&loop=1&playlist=' + videoId + '&rel=0';
+        iframe.title = 'NoCode Developers Camp — Intro Video';
+        iframe.frameBorder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        container.appendChild(iframe);
     })();
 
     document.getElementById('buy-main-offer').addEventListener('click', function (e) {
