@@ -2,7 +2,11 @@
 
 Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](https://convex.dev). Frontend is static HTML + Tailwind CSS (via CDN) using the **Velocity Blue** design system — see [`DESIGN.md`](./DESIGN.md) for the full color, type, and component spec.
 
-**Logo note:** the CodeCave mark used in the header/footers (`<svg>` icon + "CodeCave" / "NoCode Developers Camp" wordmark) is a placeholder built from scratch — there's no real logo file in this project yet. Swap it for the real one by replacing the inline `<svg>...</svg>` block (search for `TODO(design)` in `index.html`, and the matching markup in the other three files' footers) with an `<img>` tag pointing at your actual logo asset.
+## ⚠️ Known Issues (as of last code review)
+
+**1. The `referrals` table is missing from `convex/schema.ts`.** `convex/leads.ts`, `convex/referrals.ts`, and `convex/emailTriggers.ts` all read/write a `"referrals"` table (`ctx.db.query("referrals")`, `ctx.db.insert("referrals", ...)`), but no such table is declared in the schema — only `leads`, `purchases`, and `fileAssets` are. Convex requires every table used in code to be declared in the schema; as it stands, any referral-related call (someone signing up via a referral link, the leaderboard, milestone unlocks, and every referral-triggered email) will fail at runtime. This needs a `referrals: defineTable({...})` block added back to the schema before referrals will work at all — it defines `referrerEmail`, `referredEmail`, `referredName`, and `createdAt`, indexed `by_referrer`, matching what `convex/referrals.ts` already queries.
+
+**2. The "Download PDF" buttons on the dashboard's Unlockable Rewards cards aren't wired to anything.** The backend gate is fully built (`convex/guideFiles.ts`, the `/guides/download` route in `convex/http.ts`, the `fileAssets` table) and works if called correctly, but `dashboard.html`'s `reward-3-download` / `reward-10-download` elements are still plain `<button>`s with no `href` or click handler — `setRewardState()` only takes `(prefix, count, threshold, hasProgressBar)` and never sets a download URL. The buttons become visible when a reward unlocks, but clicking them does nothing. Fixing this means converting them to `<a>` tags (or adding a click handler) that builds `window.NCA_CONVEX_HTTP_URL + '/guides/download?key=guide_1&email=' + lead.email` (and `guide_2` for the second one) once unlocked.
 
 ## Pages & Funnel Flow
 
@@ -33,7 +37,7 @@ index.html  →  main-offer.html  →  dashboard.html  ←  budget-offer.html
 - **Avatar creator** — uploads a photo and composites it directly into the official camp flyer (`assets/images/avatar-flyer-template.png`), clipped into the flyer's circular photo slot and re-framed with its ring, then downloadable as the full poster. Entirely client-side (`assets/js/avatar-creator.js`) — the photo is read via `FileReader` and drawn straight to `<canvas>`; it's never uploaded to Convex or anywhere else. If that template artwork is ever replaced with a redesigned flyer, the circle's center/radius constants at the top of `avatar-creator.js` need to be re-measured to match.
 - **Unlockable rewards** — the 3-invite and 10-invite rewards are named "Prep Guide eBook 1 (AI Prompt Engineering & Training Deliverables)" and "Prep Guide eBook 2 (Backend Hosting, APIs & Cheat Sheets)", and are real, server-gated PDF downloads — see **Gated Downloads** below. Note: the Brevo email templates for triggers #3/#4 (see Email Automation below) were written before this rename and may still reference the old names — worth checking if you've already built those templates in Brevo.
 
-`main-offer.html`'s intro video is a click-to-play YouTube embed (`#intro-video-container`, `data-youtube-id` attribute) rather than a static image — loads the real YouTube iframe only once someone clicks play, not on every page load. Swap the placeholder `data-youtube-id="REPLACE_WITH_YOUTUBE_VIDEO_ID"` for the real video ID once it's uploaded.
+`main-offer.html`'s intro video (`data-youtube-id="-xllgHz-cmo"` on `#intro-video-container`) autoplays and loops continuously — muted, since browsers block unmuted autoplay outright and there's no way around that. It's a directly-created `<iframe>` with `autoplay=1&mute=1&loop=1&playlist=<same id>` (YouTube's documented way to loop a single video), built by the inline script at the bottom of the file. There's currently no unmute control — the video is silent for the full page visit. To swap in a different video, change the `data-youtube-id` value; no other code needs to change.
 
 ## Motion & Micro-interactions
 
@@ -74,13 +78,13 @@ npx convex dev
 
 ### Point the frontend at your deployment
 
-Open `assets/js/convex-client.js` and replace the placeholder:
+`assets/js/convex-client.js` already has a real deployment URL set, not the placeholder:
 
 ```js
-window.NCA_CONVEX_URL = "https://YOUR-DEPLOYMENT-NAME.convex.cloud";
+window.NCA_CONVEX_URL = "https://graceful-seahorse-783.convex.cloud";
 ```
 
-This URL is safe to keep in client-side code (same category as a Supabase project URL) — it identifies your deployment but doesn't grant write access beyond what your functions expose.
+This URL is safe to keep in client-side code (same category as a Supabase project URL) — it identifies your deployment but doesn't grant write access beyond what your functions expose. If you ever create a new Convex project, this is the line to update.
 
 ### Going to production
 
@@ -88,7 +92,7 @@ This URL is safe to keep in client-side code (same category as a Supabase projec
 npx convex deploy
 ```
 
-This gives you a **production** deployment URL — swap that into `convex-client.js` before pushing to GitHub Pages.
+This gives you a **production** deployment URL, separate from the dev one above — swap that into `convex-client.js` before your production frontend deploy goes live (see **Hosting** below — this site currently deploys via Vercel, not GitHub Pages).
 
 ## Returning-Visitor Recognition
 
@@ -108,7 +112,9 @@ npx convex env set IP_HASH_SALT <a-long-random-string>
 
 ## Gated Downloads: Prep Guide PDFs
 
-The 3-referral and 10-referral rewards ("Prep Guide eBook 1" and "eBook 2") are real, server-gated downloads — not just a UI-hidden link to a static file. The PDFs live in **Convex File Storage**, not in this repo or any public web path, and `convex/http.ts`'s `/guides/download` route re-checks the requester's actual referral count (against the same `referrals` table Convex already trusts) before ever returning the file bytes. Knowing or guessing the download URL isn't enough — the count has to genuinely be there.
+**Status: backend is complete, frontend isn't wired to it yet** — see Known Issue #2 above. The dashboard's download buttons don't currently link anywhere; the gate itself works correctly if called with a valid URL.
+
+The 3-referral and 10-referral rewards ("Prep Guide eBook 1" and "eBook 2") are real, server-gated downloads — not just a UI-hidden link to a static file. The PDFs live in **Convex File Storage**, not in this repo or any public web path, and `convex/http.ts`'s `/guides/download` route re-checks the requester's actual referral count (against the same `referrals` table Convex already trusts) before ever returning the file bytes. Knowing or guessing the download URL isn't enough — the count has to genuinely be there. (This also means these two rewards won't unlock correctly until the missing `referrals` table is restored — see Known Issue #1.)
 
 This intentionally isn't a full auth system — there's no login on this site, so email is the only identity signal available, and someone who knows another lead's exact email could download on their behalf. That's an acceptable tradeoff for two bonus PDFs; don't reuse this pattern as-is for anything more sensitive.
 
@@ -132,6 +138,8 @@ This intentionally isn't a full auth system — there's no login on this site, s
 5. Once uploaded, you can delete the local `prep-guide-*.pdf` files — the dashboard's download links pull directly from Convex Storage via the gate, not from anything local.
 
 ## Payments: Flutterwave
+
+**Status: test keys are already wired in** — `assets/js/checkout-modal.js` has a real `FLWPUBK_TEST-...` key set (not the placeholder), and this has been tested working end-to-end per earlier debugging in this project. Going live means switching to Flutterwave's live keys (in Convex for the secret key, in `checkout-modal.js` for the public one), pointing the webhook at a production Convex deployment, and completing Flutterwave's business verification — none of that has been done yet.
 
 Checkout uses [Flutterwave's Inline checkout](https://developer.flutterwave.com/v3.0/docs/inline) — their own secure modal (card + bank transfer tabs built in). We never collect raw card numbers ourselves; our custom modal (`assets/js/checkout-modal.js`) only handles order confirmation and payment-method choice, then hands off to Flutterwave's modal for the actual sensitive entry. That keeps this static site out of PCI-DSS scope.
 
@@ -161,6 +169,8 @@ Checkout uses [Flutterwave's Inline checkout](https://developer.flutterwave.com/
 
 ## Email Automation: Brevo
 
+**Status: all 13 template IDs are filled in** in `convex/emailTemplates.ts` (no longer placeholder `0`s) — sending is fully configured, pending the Known Issues note above: triggers 2–6 depend on the `referrals` table, which is currently missing from the schema, so those five won't fire correctly until that's fixed. Triggers 1 and 7–13 don't depend on referrals and aren't affected.
+
 All 13 triggers are implemented in Convex and send through Brevo's transactional email API. Nothing here needs a separate scheduler service — Convex's own cron jobs handle the time-based ones.
 
 | # | Trigger | File | Mechanism |
@@ -182,7 +192,7 @@ All 13 triggers are implemented in Convex and send through Brevo's transactional
    ```bash
    npx convex env set BREVO_API_KEY xkeysib-xxxxxxxxxxxx
    ```
-2. Open `convex/emailTemplates.ts` and replace each `0` with the real Brevo Template ID from your dashboard (Campaigns → Templates → Transactional). Until a given ID is set, that trigger is skipped with a console warning rather than failing — so you can wire this in gradually.
+2. `convex/emailTemplates.ts` already has all 13 real Template IDs filled in — only revisit this file if you rebuild a template in Brevo and get a new ID, or add a 14th trigger later.
 3. Confirm `BREVO_SENDER` in the same file matches the sender you created against your verified domain.
 4. Deploy — cron jobs activate automatically once pushed; no separate registration step:
    ```bash
@@ -191,20 +201,26 @@ All 13 triggers are implemented in Convex and send through Brevo's transactional
 
 ## Backend Integration Points
 
-Everything data-related (leads, purchases, referrals, leaderboard) and payment processing (Flutterwave checkout + server-side verification + webhook) are now live via Convex. What's still a `TODO(backend)` in the code:
+Most of what used to be placeholders here are now filled in with real values. What's actually still outstanding:
 
-- **Flutterwave public/secret keys and webhook hash** — placeholders until you follow the setup steps above
-- **Telegram invite link** — `dashboard.html` has a placeholder `TELEGRAM_INVITE_LINK`; replace it with your real group/channel invite link once you have one
-- **Brevo template IDs** — all 13 are placeholder `0`s in `convex/emailTemplates.ts` until you create the real templates and drop in their IDs
-- **Live/test mode switch** — currently points at whichever Flutterwave keys you've configured; worth double-checking you're on Test keys until you're ready to accept real money
+- **The missing `referrals` table** (Known Issue #1 above) — this is the one thing actively broken, not just unconfigured
+- **Gated download buttons not wired to the download URL** (Known Issue #2 above)
+- **Flutterwave secret key and webhook hash** — these are Convex env vars, not visible in the code, so their status can't be confirmed by reading files; the public key in `assets/js/checkout-modal.js` is a real Test key, which suggests the others were likely set too, but worth double-checking with `npx convex env list` if payments aren't confirming correctly
+- **Live/test mode switch** — currently on Flutterwave **Test** keys per `checkout-modal.js`; this needs to change deliberately before accepting real payments, along with the corresponding secret key and webhook hash
 
-## Hosting on GitHub Pages
+Already resolved, despite older notes in this README previously flagging them: the CodeCave logo is real (not a placeholder), the Telegram invite link is set, and all 13 Brevo template IDs are filled in.
 
-1. Push this folder to a GitHub repository (the `convex/_generated` folder is gitignored — each environment regenerates it via `npx convex dev`/`deploy`).
-2. In the repo settings, go to **Pages** and set the source to the `main` branch, root folder.
-3. Your site will be live at `https://<username>.github.io/<repo-name>/`.
+## Hosting: Vercel
 
-No frontend build step is required — Tailwind, Google Fonts, and the Convex client all load from CDNs at runtime. You do need to have run `npx convex deploy` at least once so `assets/js/convex-client.js` points at a live deployment.
+This site is deployed via **Vercel**, connected directly to this GitHub repo (not GitHub Pages, despite what earlier notes in this README used to say) — currently live at `ncdc.codecave.com.ng` (a subdomain of a `.com.ng` domain, DNS managed through a NiRA-accredited registrar).
+
+Since it's connected to GitHub, every push to `main` triggers an automatic redeploy — no manual upload step. To set this up fresh on a new Vercel project:
+
+1. Import this repo in the Vercel dashboard (**Add New → Project**, select from your connected GitHub account)
+2. No build configuration needed — this is plain static HTML/CSS/JS with no bundler, so Vercel's default settings (or "Other" framework preset) work fine
+3. Add your custom domain/subdomain under **Project → Settings → Domains**, and point its DNS at Vercel per the records shown there
+
+No frontend build step is required either way — Tailwind, Google Fonts, and the Convex client all load from CDNs at runtime. You do need `npx convex deploy` run at least once so `assets/js/convex-client.js` points at a live deployment before real traffic hits the site.
 
 ## Local Preview
 
