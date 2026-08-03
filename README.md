@@ -4,9 +4,12 @@ Sales funnel for the "7-Day No-Code E-Commerce Bootcamp," backed by [Convex](htt
 
 ## ⚠️ Known Issues (as of last code review)
 
-**1. The `referrals` table is missing from `convex/schema.ts`.** `convex/leads.ts`, `convex/referrals.ts`, and `convex/emailTriggers.ts` all read/write a `"referrals"` table (`ctx.db.query("referrals")`, `ctx.db.insert("referrals", ...)`), but no such table is declared in the schema — only `leads`, `purchases`, and `fileAssets` are. Convex requires every table used in code to be declared in the schema; as it stands, any referral-related call (someone signing up via a referral link, the leaderboard, milestone unlocks, and every referral-triggered email) will fail at runtime. This needs a `referrals: defineTable({...})` block added back to the schema before referrals will work at all — it defines `referrerEmail`, `referredEmail`, `referredName`, and `createdAt`, indexed `by_referrer`, matching what `convex/referrals.ts` already queries.
+Both issues previously listed here are resolved:
 
-**2. The "Download PDF" buttons on the dashboard's Unlockable Rewards cards aren't wired to anything.** The backend gate is fully built (`convex/guideFiles.ts`, the `/guides/download` route in `convex/http.ts`, the `fileAssets` table) and works if called correctly, but `dashboard.html`'s `reward-3-download` / `reward-10-download` elements are still plain `<button>`s with no `href` or click handler — `setRewardState()` only takes `(prefix, count, threshold, hasProgressBar)` and never sets a download URL. The buttons become visible when a reward unlocks, but clicking them does nothing. Fixing this means converting them to `<a>` tags (or adding a click handler) that builds `window.NCA_CONVEX_HTTP_URL + '/guides/download?key=guide_1&email=' + lead.email` (and `guide_2` for the second one) once unlocked.
+- **The `referrals` table** is now declared in `convex/schema.ts` (`referrerEmail`, `referredEmail`, `referredName`, `createdAt`, indexed `by_referrer`), matching what `convex/leads.ts`, `convex/referrals.ts`, and `convex/emailTriggers.ts` already read/write. Referral signups, the leaderboard, milestone unlocks, and referral-triggered emails all work now.
+- **The "Download PDF" buttons** on the dashboard's Unlockable Rewards cards are wired up. `reward-3-download` / `reward-10-download` are now `<a>` tags, and `setRewardState()` takes two additional params (`guideKey`, `leadEmail`) and sets `href` to `window.NCA_CONVEX_HTTP_URL + '/guides/download?key=' + guideKey + '&email=' + encodeURIComponent(leadEmail)` once a reward unlocks.
+
+No other known issues at this time.
 
 ## Pages & Funnel Flow
 
@@ -112,9 +115,9 @@ npx convex env set IP_HASH_SALT <a-long-random-string>
 
 ## Gated Downloads: Prep Guide PDFs
 
-**Status: backend is complete, frontend isn't wired to it yet** — see Known Issue #2 above. The dashboard's download buttons don't currently link anywhere; the gate itself works correctly if called with a valid URL.
+**Status: fully wired end-to-end.** The dashboard's download links now point at the gated route once a reward unlocks (frontend), and the backend gate itself works correctly.
 
-The 3-referral and 10-referral rewards ("Prep Guide eBook 1" and "eBook 2") are real, server-gated downloads — not just a UI-hidden link to a static file. The PDFs live in **Convex File Storage**, not in this repo or any public web path, and `convex/http.ts`'s `/guides/download` route re-checks the requester's actual referral count (against the same `referrals` table Convex already trusts) before ever returning the file bytes. Knowing or guessing the download URL isn't enough — the count has to genuinely be there. (This also means these two rewards won't unlock correctly until the missing `referrals` table is restored — see Known Issue #1.)
+The 3-referral and 10-referral rewards ("Prep Guide eBook 1" and "eBook 2") are real, server-gated downloads — not just a UI-hidden link to a static file. The PDFs live in **Convex File Storage**, not in this repo or any public web path, and `convex/http.ts`'s `/guides/download` route re-checks the requester's actual referral count (against the same `referrals` table Convex already trusts) before ever returning the file bytes. Knowing or guessing the download URL isn't enough — the count has to genuinely be there.
 
 This intentionally isn't a full auth system — there's no login on this site, so email is the only identity signal available, and someone who knows another lead's exact email could download on their behalf. That's an acceptable tradeoff for two bonus PDFs; don't reuse this pattern as-is for anything more sensitive.
 
@@ -169,7 +172,7 @@ Checkout uses [Flutterwave's Inline checkout](https://developer.flutterwave.com/
 
 ## Email Automation: Brevo
 
-**Status: all 13 template IDs are filled in** in `convex/emailTemplates.ts` (no longer placeholder `0`s) — sending is fully configured, pending the Known Issues note above: triggers 2–6 depend on the `referrals` table, which is currently missing from the schema, so those five won't fire correctly until that's fixed. Triggers 1 and 7–13 don't depend on referrals and aren't affected.
+**Status: all 13 template IDs are filled in** in `convex/emailTemplates.ts` (no longer placeholder `0`s) — sending is fully configured. Triggers 2–6 depend on the `referrals` table, which is now declared in the schema, so all 13 triggers fire correctly.
 
 All 13 triggers are implemented in Convex and send through Brevo's transactional email API. Nothing here needs a separate scheduler service — Convex's own cron jobs handle the time-based ones.
 
@@ -203,12 +206,10 @@ All 13 triggers are implemented in Convex and send through Brevo's transactional
 
 Most of what used to be placeholders here are now filled in with real values. What's actually still outstanding:
 
-- **The missing `referrals` table** (Known Issue #1 above) — this is the one thing actively broken, not just unconfigured
-- **Gated download buttons not wired to the download URL** (Known Issue #2 above)
 - **Flutterwave secret key and webhook hash** — these are Convex env vars, not visible in the code, so their status can't be confirmed by reading files; the public key in `assets/js/checkout-modal.js` is a real Test key, which suggests the others were likely set too, but worth double-checking with `npx convex env list` if payments aren't confirming correctly
 - **Live/test mode switch** — currently on Flutterwave **Test** keys per `checkout-modal.js`; this needs to change deliberately before accepting real payments, along with the corresponding secret key and webhook hash
 
-Already resolved, despite older notes in this README previously flagging them: the CodeCave logo is real (not a placeholder), the Telegram invite link is set, and all 13 Brevo template IDs are filled in.
+Already resolved, despite older notes in this README previously flagging them: the CodeCave logo is real (not a placeholder), the Telegram invite link is set, all 13 Brevo template IDs are filled in, the `referrals` table is declared in the schema, and the gated download buttons are wired to the download URL.
 
 ## Hosting: Vercel
 

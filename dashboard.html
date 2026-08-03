@@ -436,9 +436,9 @@
 <div>
 <h4 class="font-label-bold text-label-bold text-gray-500 mb-1" id="reward-3-title">Prep Guide eBook 1 (AI Prompt Engineering &amp; Training Deliverables)</h4>
 <p class="font-body-sm text-body-sm text-outline mb-3">Master AI prompt engineering and see exactly what deliverables to expect from training.</p>
-<button class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1 hidden" id="reward-3-download">
+<a class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1 hidden" id="reward-3-download" target="_blank" rel="noopener noreferrer">
                                         Download PDF <span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
-</button>
+</a>
 <span class="text-xs text-gray-400 mt-1 block" id="reward-3-remaining">3 more needed</span>
 </div>
 </div>
@@ -459,9 +459,9 @@
 <div class="bg-gray-400 h-1.5 rounded-full" id="reward-10-bar" style="width: 0%"></div>
 </div>
 <span class="text-xs text-gray-400 mt-1 block" id="reward-10-remaining">10 more needed</span>
-<button class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1 hidden mt-2" id="reward-10-download">
+<a class="text-sm font-label-bold text-[#1A56DB] hover:underline flex items-center gap-1 hidden mt-2" id="reward-10-download" target="_blank" rel="noopener noreferrer">
                                         Download PDF <span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
-</button>
+</a>
 </div>
 </div>
 </div>
@@ -578,8 +578,8 @@
                 if (progressLabel) progressLabel.textContent = 'Invited ' + count + ' of 10 friends';
                 if (progressBar) progressBar.style.width = Math.min(100, (count / 10) * 100) + '%';
 
-                setRewardState('reward-3', count, 3);
-                setRewardState('reward-10', count, 10, true);
+                setRewardState('reward-3', count, 3, false, 'guide_1', lead.email);
+                setRewardState('reward-10', count, 10, true, 'guide_2', lead.email);
             });
 
             // --- Telegram unlock: only after a paid ₦5,000 (live_5000) purchase ---
@@ -704,7 +704,7 @@
         });
 
         /** Toggle a reward card between its locked and unlocked visual state. */
-        function setRewardState(prefix, count, threshold, hasProgressBar) {
+        function setRewardState(prefix, count, threshold, hasProgressBar, guideKey, leadEmail) {
             var unlocked = count >= threshold;
             var card = document.getElementById(prefix + '-card');
             var badge = document.getElementById(prefix + '-badge');
@@ -728,6 +728,9 @@
                 icon.classList.remove('text-gray-400');
                 icon.classList.add('text-green-600');
                 title.classList.remove('text-gray-500');
+                if (download && guideKey && leadEmail) {
+                    download.href = window.NCA_CONVEX_HTTP_URL + '/guides/download?key=' + guideKey + '&email=' + encodeURIComponent(leadEmail);
+                }
                 if (download) download.classList.remove('hidden');
                 if (remaining) remaining.classList.add('hidden');
                 if (bar) { bar.style.width = '100%'; bar.classList.remove('bg-gray-400'); bar.classList.add('bg-green-500'); }
