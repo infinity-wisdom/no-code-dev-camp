@@ -2,7 +2,7 @@
 // (development) or `npx convex deploy` (production) — see README.md.
 // This value is meant to be public; it's the same kind of client-safe URL
 // as a Supabase project URL or Firebase config, not a secret.
-window.NCA_CONVEX_URL = "https://graceful-seahorse-783.convex.cloud";
+window.NCA_CONVEX_URL = "https://exuberant-mink-669.convex.cloud";
 
 // Convex serves HTTP actions (convex/http.ts) from a different domain than
 // the WebSocket client — same deployment name, ".convex.site" instead of
