@@ -12,7 +12,7 @@
  * TODO(backend): replace with your real Flutterwave PUBLIC key (safe to
  * expose client-side — this is not the secret key).
  */
-window.NCA_FLW_PUBLIC_KEY = "FLWPUBK-0ed013904b4c7f4240c05868f5703bc3-X";
+window.NCA_FLW_PUBLIC_KEY = "FLWPUBK-7efff449be499cfa92ab6caf3b2ada6a-X";
 
 (function () {
   var TIER_META = {
