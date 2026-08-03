@@ -391,13 +391,9 @@
 </div>
 <!-- Share Buttons Row -->
 <div class="flex flex-wrap gap-4">
-<button class="flex-1 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 font-label-bold text-label-bold px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<button class="flex-1 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 font-label-bold text-label-bold px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2" id="share-whatsapp-btn">
 <span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
                             WhatsApp
-                        </button>
-<button class="flex-1 bg-sky-50 text-sky-600 border border-sky-200 hover:bg-sky-100 font-label-bold text-label-bold px-4 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-[20px]" data-icon="share">share</span>
-                            Twitter
                         </button>
 </div>
 <!-- Progress -->
@@ -569,6 +565,15 @@
 
             if (referralInput) {
                 referralInput.value = window.nca.buildReferralLink(lead.email);
+            }
+
+            // --- WhatsApp share button ---------------------------------
+            var whatsappBtn = document.getElementById('share-whatsapp-btn');
+            if (whatsappBtn && referralInput) {
+                whatsappBtn.addEventListener('click', function () {
+                    var message = "Join me on the 7-Day No-Code E-Commerce Bootcamp! 🚀 " + referralInput.value;
+                    window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank', 'noopener,noreferrer');
+                });
             }
 
             // --- Referral progress bar + reward unlocks -------------------
